@@ -2,8 +2,9 @@ services:
   client:
     build: ./client
     ports:
-      - 3000:3000
+      - 3003:3003
     environment:
+      - PORT=3003
       - NODE_ENV=development
     volumes:
       - ./client:/app
@@ -14,5 +15,6 @@ services:
       - 5001:5001
     environment:
       - FLASK_APP=app/app.py
+      - FLASK_ENV=development
     volumes:
       - ./server:/app

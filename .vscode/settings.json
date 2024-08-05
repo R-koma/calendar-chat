@@ -1,6 +1,30 @@
 {
-  "eslint.workingDirectories": ["client"]
+  "editor.formatOnSave": true,
+  "eslint.workingDirectories": [
+    {
+      "directory": "client",
+      "changeProcessCWD": true
+    }
+  ],
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact"
+  ],
+  "python.formatting.provider": "black",
+  "python.linting.flake8Enabled": true,
+  "python.linting.ignorePatterns": ["__pycache__", "build", "logs"],
+  "python.linting.lintOnSave": true,
+  "python.formatting.blackArgs": [
+    "--line-length",
+    "88",
+    "--extend-ignore",
+    "E203,W503"
+  ],
+  "python.analysis.diagnosticMode": "workspace",
+  "python.analysis.typeCheckingMode": "basic",
+  "python.analysis.autoSearchPaths": true,
+  "python.analysis.useLibraryCodeForTypes": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode"
 }
-
-
-// TODO:server側の記述も追加予定。
