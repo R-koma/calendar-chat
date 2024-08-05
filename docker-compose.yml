@@ -1,0 +1,18 @@
+services:
+  client:
+    build: ./client
+    ports:
+      - 3000:3000
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./client:/app
+
+  server:
+    build: ./server
+    ports:
+      - 5001:5001
+    environment:
+      - FLASK_APP=app/app.py
+    volumes:
+      - ./server:/app

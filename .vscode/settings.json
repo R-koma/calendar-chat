@@ -1,0 +1,6 @@
+{
+  "eslint.workingDirectories": ["client"]
+}
+
+
+// TODO:server側の記述も追加予定。
