@@ -12,6 +12,7 @@
     "typescript",
     "typescriptreact"
   ],
+  "python.pythonPath": "/usr/local/bin/python",
   "python.formatting.provider": "black",
   "python.linting.flake8Enabled": true,
   "python.linting.ignorePatterns": ["__pycache__", "build", "logs"],
@@ -22,9 +23,13 @@
     "--extend-ignore",
     "E203,W503"
   ],
+  "python.analysis.extraPaths": ["./server"],
   "python.analysis.diagnosticMode": "workspace",
   "python.analysis.typeCheckingMode": "basic",
   "python.analysis.autoSearchPaths": true,
   "python.analysis.useLibraryCodeForTypes": true,
-  "editor.defaultFormatter": "esbenp.prettier-vscode"
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter"
+  }
 }
