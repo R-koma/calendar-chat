@@ -1,11 +1,15 @@
+import logging
+
 from flask import Blueprint, request, jsonify, make_response
 from flask_jwt_extended import (
     create_access_token,
     set_access_cookies,
     unset_jwt_cookies,
+    get_jwt,
 )
 from app.models.user_model import User
 from app import db
+from app.utils.token_utils import revoke_token
 
 auth_bp = Blueprint('auth_bp', __name__)
 
@@ -17,13 +21,20 @@ def register_user():
     email = data.get('email')
     password = data.get('password')
 
+    if User.query.filter_by(username=username).first():
+        return jsonify({'message': 'Username already exists'}), 400
+
     if User.query.filter_by(email=email).first():
         return jsonify({'message': 'Email already registered'}), 400
 
     new_user = User(username=username, email=email)
     new_user.set_password(password)
     db.session.add(new_user)
-    db.session.commit()
+    try:
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'message': 'Failed to register user', 'error': str(e)}), 500
     return jsonify({'message': 'User registered successfully'}), 201
 
 
@@ -45,6 +56,13 @@ def login_user():
 
 @auth_bp.route('/auth/logout', methods=['POST'])
 def logout_user():
+    jwt_data = get_jwt()
+    jti = jwt_data.get('jti')
+    revoke_token(jti)
+
     response = jsonify({'message': 'Logout successful'})
     unset_jwt_cookies(response)
+
+    logging.info(f"Token {jti} has been revoked.")
+
     return response
