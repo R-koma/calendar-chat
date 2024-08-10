@@ -6,6 +6,8 @@ services:
     environment:
       - PORT=3003
       - NODE_ENV=development
+    env_file:
+      - ./client/.env
     volumes:
       - ./client:/app
 
@@ -16,5 +18,7 @@ services:
     environment:
       - FLASK_APP=app/app.py
       - FLASK_ENV=development
+    env_file:
+      - ./server/.env
     volumes:
       - ./server:/app
