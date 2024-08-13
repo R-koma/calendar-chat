@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import api from '@/utils/api';
 import axios from 'axios';
+import api from '../utils/api';
 
 export const useAuth = () => {
   const [error, setError] = useState('');
@@ -41,7 +41,9 @@ export const useAuth = () => {
             'このメールアドレスまたはユーザー名は既に登録されています。',
           );
         } else {
-          setError('登録に失敗しました。');
+          setError(
+            `登録に失敗しました。ステータスコード: ${err.response?.status}`,
+          );
         }
       } else {
         setError('エラーが発生しました。');

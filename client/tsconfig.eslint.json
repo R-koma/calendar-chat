@@ -8,6 +8,7 @@
     "next-env.d.ts",
     "src/**/*.ts",
     "src/**/*.tsx",
+    "./setupTests.ts",
     "*.js",
     ".*.js",
     "tailwind.config.ts"
