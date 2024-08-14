@@ -6,6 +6,8 @@ from flask_jwt_extended import (
     set_access_cookies,
     unset_jwt_cookies,
     get_jwt,
+    jwt_required,
+    get_jwt_identity,
 )
 from app.models.user_model import User
 from app import db
@@ -47,7 +49,9 @@ def login_user():
     user = User.query.filter_by(email=email).first()
     if user and user.check_password(password):
         access_token = create_access_token(identity=user.id)
-        response = make_response(jsonify({"message": "Login successful"}), 200)
+        response = make_response(
+            jsonify({"message": "Login successful", "access_token": access_token}), 200
+        )
         set_access_cookies(response, access_token)
         return response
     else:
@@ -55,6 +59,7 @@ def login_user():
 
 
 @auth_bp.route('/auth/logout', methods=['POST'])
+@jwt_required()
 def logout_user():
     jwt_data = get_jwt()
     jti = jwt_data.get('jti')
@@ -66,3 +71,10 @@ def logout_user():
     logging.info(f"Token {jti} has been revoked.")
 
     return response
+
+
+@auth_bp.route('/auth/protected', methods=['GET'])
+@jwt_required()
+def protected():
+    current_user = get_jwt_identity()
+    return jsonify(logged_in_as=current_user), 200

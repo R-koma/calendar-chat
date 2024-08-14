@@ -12,6 +12,9 @@ class TestAuth(unittest.TestCase):
         self.app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
         self.client = self.app.test_client()
 
+        self.ctx = self.app.app_context()
+        self.ctx.push()
+
         with self.app.app_context():
             db.create_all()
 
@@ -19,6 +22,8 @@ class TestAuth(unittest.TestCase):
         with self.app.app_context():
             db.session.remove()
             db.drop_all()
+
+        self.ctx.pop()
 
     def test_register(self):
         response = self.client.post(
@@ -60,11 +65,27 @@ class TestAuth(unittest.TestCase):
         response = self.client.post(
             '/auth/login', json={'email': 'test@example.com', 'password': 'password'}
         )
-        access_token = response.get_json()['access_token']
+        self.assertEqual(response.status_code, 200)
+        response_json = response.get_json()
+        access_token = response_json['access_token']
+
+        csrf_token = None
+        for cookie in response.headers.getlist('Set-Cookie'):
+            if 'csrf_access_token' in cookie:
+                csrf_token = cookie.split('csrf_access_token=')[1].split(';')[0]
+
+        self.assertIsNotNone(csrf_token, "CSRF token not found in the login response")
 
         self.client.set_cookie('localhost', 'access_token_cookie', access_token)
+        self.client.set_cookie('localhost', 'csrf_access_token', csrf_token)
 
-        response = self.client.post('/auth/logout')
+        response = self.client.post(
+            '/auth/logout',
+            headers={
+                'Authorization': f'Bearer {access_token}',
+                'X-CSRF-TOKEN': csrf_token,
+            },
+        )
         self.assertEqual(response.status_code, 200)
         self.assertIn('Logout successful', response.get_json()['message'])
 
@@ -77,8 +98,9 @@ class TestAuth(unittest.TestCase):
         time.sleep(2)
 
         response = self.client.get(
-            '/protected', headers={'Authorization': f'Bearer {token}'}
+            '/auth/protected', headers={'Authorization': f'Bearer {token}'}
         )
+        print(f"Status code: {response.status_code}")
         self.assertEqual(response.status_code, 401)
 
     def test_password_hashing(self):

@@ -8,6 +8,8 @@
     "next-env.d.ts",
     "src/**/*.ts",
     "src/**/*.tsx",
+    "src/**/*.test.ts",
+    "src/**/*.test.tsx",
     "./setupTests.ts",
     "*.js",
     ".*.js",

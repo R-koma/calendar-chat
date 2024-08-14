@@ -53,7 +53,19 @@ export const useAuth = () => {
 
   const logout = async () => {
     try {
-      await api.post('/auth/logout');
+      const csrfToken = document.cookie
+        .split('; ')
+        .find((row) => row.startsWith('csrf_access_token='))
+        ?.split('=')[1];
+      await api.post(
+        '/auth/logout',
+        {},
+        {
+          headers: {
+            'X-CSRF-TOKEN': csrfToken,
+          },
+        },
+      );
       router.push('/auth/login');
     } catch (err) {
       setError('ログアウトに失敗しました。');
