@@ -1,5 +1,6 @@
 import logging
 
+from datetime import timedelta
 from flask import Blueprint, request, jsonify, make_response
 from flask_jwt_extended import (
     create_access_token,
@@ -48,7 +49,9 @@ def login_user():
 
     user = User.query.filter_by(email=email).first()
     if user and user.check_password(password):
-        access_token = create_access_token(identity=user.id)
+        access_token = create_access_token(
+            identity=user.id, expires_delta=timedelta(hours=1)
+        )
         response = make_response(
             jsonify({"message": "Login successful", "access_token": access_token}), 200
         )
