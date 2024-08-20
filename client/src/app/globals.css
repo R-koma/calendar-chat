@@ -31,3 +31,51 @@ body {
     text-wrap: balance;
   }
 }
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+#__next {
+  height: 100%;
+}
+
+.calendar-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.calendar-content {
+  display: flex;
+  height: 100%;
+  width: 100%;
+}
+
+.date-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0;
+  font-size: 0.5rem;
+}
+
+.text-xxs {
+  font-size: 0.625rem;
+}
+.text-xxxs {
+  font-size: 0.525rem;
+}
+
+.icon-extra-small {
+  width: 12px;
+  height: 12px;
+}
+
+.react-datepicker-wrapper {
+  width: 100%;
+}
