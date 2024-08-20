@@ -1,11 +1,10 @@
-import Logout from '@/components/auth/LogoutButton';
+import CalendarPage from '@/components/calendar/CalendarPage';
 import React from 'react';
 
 const calendar = () => {
   return (
-    <div>
-      <div>calendar</div>
-      <Logout />
+    <div className="calendar-container text-white">
+      <CalendarPage />
     </div>
   );
 };

@@ -50,7 +50,9 @@ def login_user():
     user = User.query.filter_by(email=email).first()
     if user and user.check_password(password):
         access_token = create_access_token(
-            identity=user.id, expires_delta=timedelta(hours=1)
+            identity=user.id,
+            additional_claims={"username": user.username},
+            expires_delta=timedelta(hours=1),
         )
         response = make_response(
             jsonify({"message": "Login successful", "access_token": access_token}), 200
@@ -59,6 +61,16 @@ def login_user():
         return response
     else:
         return jsonify({"message": "Invalid email or password"}), 401
+
+
+@auth_bp.route('/auth/user', methods=['GET'])
+@jwt_required()
+def get_user():
+    user_id = get_jwt_identity()
+    user = User.query.get(user_id)
+    if user:
+        return jsonify(username=user.username, email=user.email), 200
+    return jsonify({"msg": "User not found"}), 404
 
 
 @auth_bp.route('/auth/logout', methods=['POST'])
