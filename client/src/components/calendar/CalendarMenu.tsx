@@ -12,6 +12,7 @@ type MenuProps = {
   friendListOpen: boolean;
   toggleFriendList: () => void;
   menuRef: React.RefObject<HTMLDivElement>;
+  openSearchModal: () => void;
 };
 
 export default function CalendarMenu({
@@ -22,6 +23,7 @@ export default function CalendarMenu({
   friendListOpen,
   toggleFriendList,
   menuRef,
+  openSearchModal,
 }: MenuProps) {
   return (
     <div
@@ -46,6 +48,7 @@ export default function CalendarMenu({
         <AddIcon className="icon-extra-small" />
         イベント作成
       </button>
+
       <div>
         <div
           className="flex items-center px-2 pt-2 cursor-pointer"
@@ -109,7 +112,17 @@ export default function CalendarMenu({
           </div>
         )}
       </div>
-      <div className="flex items-center p-2 cursor-pointer">
+      <div
+        className="flex items-center p-2 cursor-pointer"
+        onClick={openSearchModal}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            openSearchModal();
+          }
+        }}
+        role="button"
+        tabIndex={0}
+      >
         <AddIcon fontSize="small" />
         <div className="text-xxs">友達を追加</div>
       </div>

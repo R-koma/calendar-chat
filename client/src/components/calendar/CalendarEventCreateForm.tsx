@@ -68,7 +68,7 @@ export default function CalendarEventCreateForm({
           <div className="mb-2">
             <label className="block text-xxs font-bold">
               説明
-              <textarea className="w-full h-12 p-2 border rounded text-gray-700 text-xxs outline-none"></textarea>
+              <textarea className="w-full h-12 p-2 border rounded text-gray-700 text-xxs outline-none" />
             </label>
           </div>
           <div className="mb-2">

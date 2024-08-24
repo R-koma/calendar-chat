@@ -9,7 +9,9 @@ const useDate = (): UseDateReturnType => {
   const [view, setView] = useState<string>('month');
 
   const handleDateChange = (date: Date | null) => {
-    setSelectedDate(date);
+    if (date) {
+      setSelectedDate(date);
+    }
   };
 
   return {
