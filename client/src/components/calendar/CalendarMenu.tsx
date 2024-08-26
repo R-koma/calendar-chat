@@ -2,7 +2,9 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
+import { useRouter } from 'next/navigation';
 import LogoutButton from '../auth/LogoutButton';
+import FriendRequests from './FriendRequest';
 
 type MenuProps = {
   user: { username: string };
@@ -25,6 +27,7 @@ export default function CalendarMenu({
   menuRef,
   openSearchModal,
 }: MenuProps) {
+  const router = useRouter();
   return (
     <div
       ref={menuRef}
@@ -111,6 +114,10 @@ export default function CalendarMenu({
             </div>
           </div>
         )}
+      </div>
+      <div className="p-2">
+        <h3 className="text-sm">フレンドリクエスト</h3>
+        <FriendRequests />
       </div>
       <div
         className="flex items-center p-2 cursor-pointer"
