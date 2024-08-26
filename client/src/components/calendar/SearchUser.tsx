@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 import api from '@/utils/api';
 import { User } from '@/types/User';
 import PersonIcon from '@mui/icons-material/Person';
-import EmailIcon from '@mui/icons-material/Email';
 
 type SearchUserProps = {
   closeSearchModal: () => void;
@@ -29,6 +28,27 @@ export default function SearchUser({ closeSearchModal }: SearchUserProps) {
     }
   };
 
+  const handleSendRequest = async (receiverId: number) => {
+    try {
+      const csrfToken = document.cookie
+        .split('; ')
+        .find((row) => row.startsWith('csrf_access_token='))
+        ?.split('=')[1];
+
+      if (!csrfToken) {
+        throw new Error('CSRF token not found');
+      }
+
+      await api.post(
+        '/friend/request',
+        { receiver_id: receiverId },
+        { headers: { 'X-CSRF-TOKEN': csrfToken } },
+      );
+    } catch (err) {
+      setError('申請に失敗しました');
+    }
+  };
+
   return (
     <div className="space-y-4">
       <div className="flex items-center space-x-2">
@@ -50,13 +70,19 @@ export default function SearchUser({ closeSearchModal }: SearchUserProps) {
       {error && <p className="text-red-500">{error}</p>}
       <ul className="space-y-2">
         {results.map((user) => (
-          <li
-            key={user.id}
-            className="flex justify-center px-4 py-2  cursor-pointer"
-          >
-            {/* TODO:アイコン追加 */}
-            <PersonIcon className="mr-1" fontSize="small" />
-            {user.username}
+          <li key={user.id} className="px-4 py-2  cursor-pointer">
+            <span>
+              {/* TODO:アイコン追加 */}
+              <PersonIcon className="mr-1" fontSize="small" />
+              {user.username}
+            </span>
+            <button
+              type="button"
+              onClick={() => handleSendRequest(user.id)}
+              className="bg-blue-600 text-white text-sm ml-2 py-1 px-3 rounded-lg hover:bg-blue-500 focus:outline-none"
+            >
+              友達申請
+            </button>
           </li>
         ))}
       </ul>
