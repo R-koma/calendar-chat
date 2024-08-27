@@ -7,11 +7,15 @@ import useMenuOpen from './useMenuOpen';
 const useMenu = (): UseMenuReturnType => {
   const { menuOpen, setMenuOpen, toggleMenu } = useMenuOpen();
   const [friendListOpen, setFriendListOpen] = useState(true);
+  const [friendRequestOpen, setFriendRequestOpen] = useState(true);
 
   const menuRef = useRef<HTMLDivElement>(null);
 
   const toggleFriendList = () => {
     setFriendListOpen(!friendListOpen);
+  };
+  const toggleFriendRequest = () => {
+    setFriendRequestOpen(!friendRequestOpen);
   };
 
   useEffect(() => {
@@ -31,6 +35,8 @@ const useMenu = (): UseMenuReturnType => {
     toggleMenu,
     friendListOpen,
     toggleFriendList,
+    friendRequestOpen,
+    toggleFriendRequest,
     menuRef,
   };
 };

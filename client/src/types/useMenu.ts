@@ -3,5 +3,7 @@ export type UseMenuReturnType = {
   toggleMenu: () => void;
   friendListOpen: boolean;
   toggleFriendList: () => void;
+  friendRequestOpen: boolean;
+  toggleFriendRequest: () => void;
   menuRef: React.RefObject<HTMLDivElement>;
 };

@@ -49,11 +49,11 @@ def get_friend_requests():
 
 @friend_bp.route('/friend/request/<int:id>/respond', methods=['POST'])
 @jwt_required()
-def respond_to_friend_request(id):
+def respond_to_friend_request(request_id):
     action = request.json.get('action')
     user_id = get_jwt_identity()
 
-    friend_request = FriendRequest.query.get(id)
+    friend_request = FriendRequest.query.get(request_id)
     if not friend_request or friend_request.receiver_id != user_id:
         return jsonify({'message': 'Invalid request.'}), 400
 
@@ -61,10 +61,25 @@ def respond_to_friend_request(id):
         friend_request.status = 'accepted'
         sender = User.query.get(friend_request.sender_id)
         receiver = User.query.get(friend_request.receiver_id)
-        sender.friends.append(receiver)
-        receiver.friends.append(sender)
+
+        if receiver not in sender.friends:
+            sender.friends.append(receiver)
+        if sender not in receiver.friends:
+            receiver.friends.append(sender)
+
+        db.session.commit()
+
+        return (
+            jsonify(
+                {
+                    'message': 'Request accepted.',
+                    'friend': {'id': sender.id, 'username': sender.username},
+                }
+            ),
+            200,
+        )
     elif action == 'reject':
-        friend_request.status = 'rejected'
+        db.session.delete(friend_request)
     else:
         return jsonify({'message': 'Invalid action.'}), 400
 

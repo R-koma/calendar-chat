@@ -21,8 +21,15 @@ export default function CalendarPage() {
     view,
     setView,
   } = useDate();
-  const { menuOpen, toggleMenu, friendListOpen, toggleFriendList, menuRef } =
-    useMenu();
+  const {
+    menuOpen,
+    toggleMenu,
+    friendListOpen,
+    toggleFriendList,
+    friendRequestOpen,
+    toggleFriendRequest,
+    menuRef,
+  } = useMenu();
   const { isModalOpen, openModal, closeModal } = useModal();
 
   const {
@@ -53,6 +60,8 @@ export default function CalendarPage() {
         openModal={openModal}
         friendListOpen={friendListOpen}
         toggleFriendList={toggleFriendList}
+        friendRequestOpen={friendRequestOpen}
+        toggleFriendRequest={toggleFriendRequest}
         menuRef={menuRef}
         openSearchModal={openSearchModal}
       />
