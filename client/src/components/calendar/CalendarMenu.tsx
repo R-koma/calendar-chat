@@ -2,7 +2,9 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
-import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { User } from '@/types/User';
+import api from '@/utils/api';
 import LogoutButton from '../auth/LogoutButton';
 import FriendRequests from './FriendRequest';
 
@@ -13,6 +15,8 @@ type MenuProps = {
   openModal: () => void;
   friendListOpen: boolean;
   toggleFriendList: () => void;
+  friendRequestOpen: boolean;
+  toggleFriendRequest: () => void;
   menuRef: React.RefObject<HTMLDivElement>;
   openSearchModal: () => void;
 };
@@ -24,10 +28,45 @@ export default function CalendarMenu({
   openModal,
   friendListOpen,
   toggleFriendList,
+  friendRequestOpen,
+  toggleFriendRequest,
   menuRef,
   openSearchModal,
 }: MenuProps) {
-  const router = useRouter();
+  const [friends, setFriends] = useState<User[]>([]);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let isMounted = true;
+    const fetchFriends = async () => {
+      try {
+        const response = await api.get<User[]>('/user/friends');
+        setFriends(response.data);
+      } catch (err) {
+        setError('友達の取得に失敗しました');
+      }
+    };
+
+    fetchFriends().catch(() => {
+      if (isMounted) {
+        setError('友達の取得に失敗しました');
+      }
+    });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const addFriend = (newFriend: User) => {
+    setFriends((prevFriends) => {
+      if (!prevFriends.some((friend) => friend.id === newFriend.id)) {
+        return [...prevFriends, newFriend];
+      }
+      return prevFriends;
+    });
+  };
+
   return (
     <div
       ref={menuRef}
@@ -52,7 +91,7 @@ export default function CalendarMenu({
         イベント作成
       </button>
 
-      <div>
+      <div className="p-2">
         <div
           className="flex items-center px-2 pt-2 cursor-pointer"
           onClick={toggleFriendList}
@@ -81,43 +120,61 @@ export default function CalendarMenu({
         </div>
         {friendListOpen && (
           <div className="px-2">
-            <div className="flex items-center p-1">
-              <input
-                type="text"
-                className="flex-grow p-1 bg-gray-700 rounded-sm text-xxs h-4"
-                placeholder="名前を検索"
-              />
-            </div>
-            <div className="flex items-center p-1 w-full cursor-pointer">
-              <div className="text-xxs w-6 h-6 flex items-center justify-center border border-gray-500 rounded-full mr-2">
-                T
-              </div>
-              <div className="text-xxs">タナカ</div>
-            </div>
-            <div className="flex items-center p-1 w-full cursor-pointer">
-              <div className="cursor-pointer text-xxs w-6 h-6 flex items-center justify-center border border-gray-500 rounded-full mr-2">
-                M
-              </div>
-              <div className="text-xxs">マイケル</div>
-            </div>
-            <div className="flex items-center p-1 w-full cursor-pointer">
-              <div className="cursor-pointer text-xxs w-6 h-6 flex items-center justify-center border border-gray-500 rounded-full mr-2">
-                J
-              </div>
-              <div className="text-xxs">ジョン</div>
-            </div>
-            <div className="flex items-center p-1 w-full cursor-pointer">
-              <div className="cursor-pointer text-xxs w-6 h-6 flex items-center justify-center border border-gray-500 rounded-full mr-2">
-                N
-              </div>
-              <div className="text-xxs">ニーナ</div>
-            </div>
+            {friends.map((friend) =>
+              friend ? (
+                <div
+                  key={friend.id}
+                  className="flex items-center p-1 w-full cursor-pointer"
+                >
+                  <div className="text-xxs w-6 h-6 flex items-center justify-center border border-gray-500 rounded-full mr-2">
+                    {friend.username.charAt(0).toUpperCase()}
+                  </div>
+                  <div className="text-xxs">{friend.username}</div>
+                </div>
+              ) : (
+                <div
+                  key={Math.random()}
+                  className="flex items-center p-1 w-full cursor-pointer"
+                >
+                  <div className="text-xxs w-6 h-6 flex items-center justify-center border border-gray-500 rounded-full mr-2">
+                    U
+                  </div>
+                  <div className="text-xxs">Unknown Friend</div>
+                </div>
+              ),
+            )}
           </div>
         )}
+        {error && <p className="text-red-500">{error}</p>}
       </div>
       <div className="p-2">
-        <h3 className="text-sm">フレンドリクエスト</h3>
-        <FriendRequests />
+        <div
+          className="flex items-center px-2 pt-2  mb-2 cursor-pointer"
+          onClick={toggleFriendRequest}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              toggleFriendRequest();
+            }
+          }}
+          role="button"
+          tabIndex={0}
+        >
+          <div className="text-xxs mr-2">フレンドリクエスト</div>
+          {friendRequestOpen ? (
+            <ArrowDropUpIcon
+              onClick={toggleFriendRequest}
+              fontSize="small"
+              className="cursor-pointer"
+            />
+          ) : (
+            <ArrowDropDownIcon
+              onClick={toggleFriendRequest}
+              fontSize="small"
+              className="cursor-pointer"
+            />
+          )}
+        </div>
+        {friendRequestOpen && <FriendRequests addFriend={addFriend} />}
       </div>
       <div
         className="flex items-center p-2 cursor-pointer"
@@ -138,7 +195,7 @@ export default function CalendarMenu({
           <div className="cursor-pointer text-xxs w-6 h-6 flex items-center justify-center border border-gray-500 rounded-full mr-2">
             {user.username.charAt(0)}
           </div>
-          <div className="text-xxs">{user.username}</div>
+          <div className="text-xxs">{user?.username ?? 'Guest'}</div>
         </div>
         <div className="mx-2">
           <LogoutButton />
