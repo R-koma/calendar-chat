@@ -57,7 +57,30 @@ export default function CalendarMenu({
     });
   }, []);
 
-  const handleRespondToInvite = async (eventId: number, response: string) => {};
+  const handleRespondToInvite = async (eventId: number, response: string) => {
+    try {
+      const csrfToken = document.cookie
+        .split('; ')
+        .find((row) => row.startsWith('csrf_access_token='))
+        ?.split('=')[1];
+
+      if (!csrfToken) {
+        throw new Error('CSRF token not found');
+      }
+
+      await api.post(
+        '/event/respond',
+        { event_id: eventId, response },
+        { headers: { 'X-CSRF-TOKEN': csrfToken } },
+      );
+
+      setEventInvites((prevInvites) =>
+        prevInvites.filter((invite) => invite.id !== eventId),
+      );
+    } catch (err) {
+      setError('イベントへの参加/不参加の処理に失敗しました');
+    }
+  };
 
   const addFriend = (newFriend: User) => {
     setFriends((prevFriends) => {

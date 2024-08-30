@@ -3,7 +3,7 @@ import logging
 from datetime import datetime
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from app.models import db, Event, EventInvite, EventParticipant
+from app.models import db, Event, EventInvite, EventParticipant, User
 
 logger = logging.getLogger(__name__)
 
@@ -96,4 +96,68 @@ def get_participated_events():
         return jsonify(events), 200
     except Exception as e:
         logger.error(f"Error fetching participated events: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+
+@event_bp.route('/event/respond', methods=['POST'])
+@jwt_required()
+def respond_to_event():
+    try:
+        data = request.get_json()
+        user_id = get_jwt_identity()
+        event_id = data.get('event_id')
+        response = data.get('response')
+
+        if response == 'accepted':
+            existing_participant = EventParticipant.query.filter_by(
+                event_id=event_id, user_id=user_id
+            ).first()
+            if not existing_participant:
+                participant = EventParticipant(event_id=event_id, user_id=user_id)
+                db.session.add(participant)
+
+        invite = EventInvite.query.filter_by(event_id=event_id, user_id=user_id).first()
+        if invite:
+            invite.status = response
+
+        db.session.commit()
+
+        return jsonify({'message': 'Response recorded successfully.'}), 200
+    except Exception as e:
+        db.session.rollback()
+        logger.error(f"Error responding to event: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+
+@event_bp.route('/event/<int:event_id>/detail', methods=['GET'])
+@jwt_required()
+def get_event_detail(event_id):
+    try:
+
+        event = Event.query.get(event_id)
+        if not event:
+            return jsonify({'error': 'Event not found'}), 404
+
+        participants = (
+            db.session.query(User)
+            .join(EventParticipant, User.id == EventParticipant.user_id)
+            .filter(EventParticipant.event_id == event_id)
+            .all()
+        )
+
+        participant_list = [{'id': p.id, 'username': p.username} for p in participants]
+
+        event_detail = {
+            'event_name': event.event_name,
+            'event_date': event.event_date.isoformat(),
+            'meeting_time': event.meeting_time,
+            'meeting_place': event.meeting_place,
+            'description': event.description,
+            'participants': participant_list,
+        }
+
+        return jsonify(event_detail), 200
+
+    except Exception as e:
+        logger.error(f"Error fetching event details: {str(e)}")
         return jsonify({'error': str(e)}), 500

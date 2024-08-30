@@ -8,13 +8,11 @@ import {
   getWeekdays,
 } from '@/utils/dateUtils';
 import { useEffect, useState } from 'react';
-import { Event, EventDetail } from '@/types/Event';
-import EventDetailModal from './EventDetailModal';
-import { EventInvite } from '@/types/User';
+import { Event } from '@/types/Event';
 
 type DaysProps = {
   currentDate: Date;
-  openEventDetailModal: (event: EventInvite) => void;
+  openEventDetailModal: (event: Event) => void;
 };
 
 export default function CalendarDays({
@@ -26,26 +24,6 @@ export default function CalendarDays({
   const { startDate, endDate } = getMonthStartEnd(currentDate);
   const [events, setEvents] = useState<Event[]>([]);
   const [error, setError] = useState<string | null>(null);
-
-  // const [selectedEvent, setSelectedEvent] = useState<EventDetail | null>(null);
-  // const [isEventDetailModalOpen, setIsEventDetailModalOpen] = useState(false);
-
-  // const openEventDetailModal = (event: Event) => {
-  //   const detailedEvent: EventDetail = {
-  //     ...event,
-  //     meeting_time: '',
-  //     meeting_place: '',
-  //     description: '',
-  //     participants: [],
-  //   };
-  //   setSelectedEvent(detailedEvent);
-  //   setIsEventDetailModalOpen(true);
-  // };
-
-  // const closeEventDetailModal = () => {
-  //   setSelectedEvent(null);
-  //   setIsEventDetailModalOpen(false);
-  // };
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -70,18 +48,24 @@ export default function CalendarDays({
     });
   }, [currentDate]);
 
-  const renderEvent = (date: Date) => {
-    const event = events.find(
+  const renderEvents = (date: Date) => {
+    const eventsForDate = events.filter(
       (e) => new Date(e.event_date).getDate() === date.getDate(),
     );
-    return event ? (
-      <button
-        type="button"
-        className="text-xs text-blue-500"
-        onClick={() => openEventDetailModal(event)}
-      >
-        {event.event_name}
-      </button>
+
+    return eventsForDate.length > 0 ? (
+      <div className="space-y-1">
+        {eventsForDate.map((event) => (
+          <button
+            key={event.id}
+            type="button"
+            className="text-xs text-blue-500 block"
+            onClick={() => openEventDetailModal(event)}
+          >
+            {event.event_name}
+          </button>
+        ))}
+      </div>
     ) : null;
   };
 
@@ -115,7 +99,7 @@ export default function CalendarDays({
         className="p-4 border border-gray-200 text-xs text-gray-900 date-cell"
       >
         {d + 1 === 1 ? `${monthNames[currentDate.getMonth()]} ${d + 1}` : d + 1}
-        {renderEvent(
+        {renderEvents(
           new Date(currentDate.getFullYear(), currentDate.getMonth(), d + 1),
         )}
       </div>

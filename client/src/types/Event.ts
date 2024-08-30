@@ -1,4 +1,5 @@
 export type EventDetail = {
+  id: number;
   event_name: string;
   event_date: string;
   meeting_time: string;
