@@ -48,8 +48,9 @@ export default function CalendarPage() {
 
   const [selectedEvent, setSelectedEvent] = useState<EventDetail | null>(null);
   const [isEventDetailModalOpen, setIsEventDetailModalOpen] = useState(false);
+  const [showChatButton, setShowChatButton] = useState(false);
 
-  const openEventDetailModal = (event: Event) => {
+  const openEventDetailModal = (event: Event, showChat: boolean) => {
     const detailedEvent: EventDetail = {
       ...event,
       meeting_time: '',
@@ -58,12 +59,14 @@ export default function CalendarPage() {
       participants: [],
     };
     setSelectedEvent(detailedEvent);
+    setShowChatButton(showChat);
     setIsEventDetailModalOpen(true);
   };
 
   const closeEventDetailModal = () => {
     setSelectedEvent(null);
     setIsEventDetailModalOpen(false);
+    setShowChatButton(false);
   };
 
   useEffect(() => {
@@ -123,6 +126,7 @@ export default function CalendarPage() {
         <EventDetailModal
           event={selectedEvent}
           onClose={closeEventDetailModal}
+          showChatButton={showChatButton}
         />
       )}
       {isSearchModalOpen && (
