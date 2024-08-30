@@ -8,23 +8,44 @@ import {
   getWeekdays,
 } from '@/utils/dateUtils';
 import { useEffect, useState } from 'react';
-
-type Event = {
-  id: number;
-  event_name: string;
-  event_date: string;
-};
+import { Event, EventDetail } from '@/types/Event';
+import EventDetailModal from './EventDetailModal';
+import { EventInvite } from '@/types/User';
 
 type DaysProps = {
   currentDate: Date;
+  openEventDetailModal: (event: EventInvite) => void;
 };
 
-export default function CalendarDays({ currentDate }: DaysProps) {
+export default function CalendarDays({
+  currentDate,
+  openEventDetailModal,
+}: DaysProps) {
   const weekdays = getWeekdays();
   const monthNames = getMonthNames();
   const { startDate, endDate } = getMonthStartEnd(currentDate);
   const [events, setEvents] = useState<Event[]>([]);
   const [error, setError] = useState<string | null>(null);
+
+  // const [selectedEvent, setSelectedEvent] = useState<EventDetail | null>(null);
+  // const [isEventDetailModalOpen, setIsEventDetailModalOpen] = useState(false);
+
+  // const openEventDetailModal = (event: Event) => {
+  //   const detailedEvent: EventDetail = {
+  //     ...event,
+  //     meeting_time: '',
+  //     meeting_place: '',
+  //     description: '',
+  //     participants: [],
+  //   };
+  //   setSelectedEvent(detailedEvent);
+  //   setIsEventDetailModalOpen(true);
+  // };
+
+  // const closeEventDetailModal = () => {
+  //   setSelectedEvent(null);
+  //   setIsEventDetailModalOpen(false);
+  // };
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -54,7 +75,13 @@ export default function CalendarDays({ currentDate }: DaysProps) {
       (e) => new Date(e.event_date).getDate() === date.getDate(),
     );
     return event ? (
-      <div className="text-xs text-blue-500">{event.event_name}</div>
+      <button
+        type="button"
+        className="text-xs text-blue-500"
+        onClick={() => openEventDetailModal(event)}
+      >
+        {event.event_name}
+      </button>
     ) : null;
   };
 
@@ -123,6 +150,7 @@ export default function CalendarDays({ currentDate }: DaysProps) {
           </div>
         </div>
       </div>
+      {error && <p className="text-red-500">{error}</p>}
     </div>
   );
 }
