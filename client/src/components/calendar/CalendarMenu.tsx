@@ -22,6 +22,7 @@ type MenuProps = {
   toggleFriendRequest: () => void;
   menuRef: React.RefObject<HTMLDivElement>;
   openSearchModal: () => void;
+  openEventDetailModal: (event: EventInvite) => void;
 };
 
 export default function CalendarMenu({
@@ -35,6 +36,7 @@ export default function CalendarMenu({
   toggleFriendRequest,
   menuRef,
   openSearchModal,
+  openEventDetailModal,
 }: MenuProps) {
   const { friends, setFriends, fetchFriends } = useFriends();
 
@@ -54,6 +56,8 @@ export default function CalendarMenu({
       setError('イベント招待の取得に失敗しました');
     });
   }, []);
+
+  const handleRespondToInvite = async (eventId: number, response: string) => {};
 
   const addFriend = (newFriend: User) => {
     setFriends((prevFriends) => {
@@ -88,23 +92,32 @@ export default function CalendarMenu({
         イベント作成
       </button>
       <div className="p-2">
-        <div className="text-xxs font-bold mb-2">イベント招待リスト</div>
+        <div className="text-xxs font-bold mb-4">イベント招待リスト</div>
         {eventInvites.length > 0 ? (
           eventInvites.map((invite) => (
-            <div key={invite.id} className="mb-2">
-              <div className="text-xxs font-bold">{invite.event_name}</div>
-              <div className="flex justify-between">
+            <div
+              key={invite.id}
+              className="mb-2 flex items-center justify-between"
+            >
+              <button
+                type="button"
+                className="text-xxs font-bold cursor-pointer"
+                onClick={() => openEventDetailModal(invite)}
+              >
+                {invite.event_name}
+              </button>
+              <div className="flex space-x-4">
                 <button
                   type="button"
                   onClick={() => handleRespondToInvite(invite.id, 'accepted')}
-                  className="text-xs text-green-500"
+                  className="text-xxs text-green-500"
                 >
                   参加
                 </button>
                 <button
                   type="button"
                   onClick={() => handleRespondToInvite(invite.id, 'declined')}
-                  className="text-xs text-red-500"
+                  className="text-xxs text-red-500"
                 >
                   不参加
                 </button>

@@ -6,13 +6,15 @@ import useFetchUser from '@/hooks/useFetchUser';
 import useMenu from '@/hooks/useMenu';
 import useModal from '@/hooks/useModal';
 import api from '@/utils/api';
-import { User } from '@/types/User';
 import { useFriends } from '@/contexts/FriendsContext';
+import { User } from '@/types/User';
+import { Event, EventDetail } from '@/types/Event';
 import CalendarHeader from './CalendarHeader';
 import CalendarDays from './CalendarDays';
 import CalendarMenu from './CalendarMenu';
 import SearchUser from './SearchUser';
 import CalendarEventCreateForm from './CalendarEventCreateForm';
+import EventDetailModal from './EventDetailModal';
 
 export default function CalendarPage() {
   const { user } = useFetchUser();
@@ -44,6 +46,26 @@ export default function CalendarPage() {
   const { setFriends } = useFriends();
   const [error, setError] = useState<string | null>(null);
 
+  const [selectedEvent, setSelectedEvent] = useState<EventDetail | null>(null);
+  const [isEventDetailModalOpen, setIsEventDetailModalOpen] = useState(false);
+
+  const openEventDetailModal = (event: Event) => {
+    const detailedEvent: EventDetail = {
+      ...event,
+      meeting_time: '',
+      meeting_place: '',
+      description: '',
+      participants: [],
+    };
+    setSelectedEvent(detailedEvent);
+    setIsEventDetailModalOpen(true);
+  };
+
+  const closeEventDetailModal = () => {
+    setSelectedEvent(null);
+    setIsEventDetailModalOpen(false);
+  };
+
   useEffect(() => {
     const fetchFriends = async () => {
       try {
@@ -73,7 +95,10 @@ export default function CalendarPage() {
         setView={setView}
         toggleMenu={toggleMenu}
       />
-      <CalendarDays currentDate={currentDate} />
+      <CalendarDays
+        currentDate={currentDate}
+        openEventDetailModal={openEventDetailModal}
+      />
       <CalendarMenu
         user={user}
         menuOpen={menuOpen}
@@ -85,6 +110,7 @@ export default function CalendarPage() {
         toggleFriendRequest={toggleFriendRequest}
         menuRef={menuRef}
         openSearchModal={openSearchModal}
+        openEventDetailModal={openEventDetailModal}
       />
 
       <CalendarEventCreateForm
@@ -93,6 +119,12 @@ export default function CalendarPage() {
         selectedDate={selectedDate}
         handleDateChange={handleDateChange}
       />
+      {isEventDetailModalOpen && selectedEvent && (
+        <EventDetailModal
+          event={selectedEvent}
+          onClose={closeEventDetailModal}
+        />
+      )}
       {isSearchModalOpen && (
         <div className="absolute inset-0 bg-gray-800 bg-opacity-90 flex items-center justify-center z-50">
           <div className="bg-gray-800 rounded-lg shadow-lg p-6 w-full max-w-lg mx-auto">
