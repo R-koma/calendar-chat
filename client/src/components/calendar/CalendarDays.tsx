@@ -12,7 +12,7 @@ import { Event } from '@/types/Event';
 
 type DaysProps = {
   currentDate: Date;
-  openEventDetailModal: (event: Event) => void;
+  openEventDetailModal: (event: Event, showChatButton: boolean) => void;
 };
 
 export default function CalendarDays({
@@ -60,7 +60,7 @@ export default function CalendarDays({
             key={event.id}
             type="button"
             className="text-xs text-blue-500 block"
-            onClick={() => openEventDetailModal(event)}
+            onClick={() => openEventDetailModal(event, true)}
           >
             {event.event_name}
           </button>
@@ -96,7 +96,7 @@ export default function CalendarDays({
     (_, d) => (
       <div
         key={`day-${d + 1}`}
-        className="p-4 border border-gray-200 text-xs text-gray-900 date-cell"
+        className="p-4 border border-gray-200 text-xs text-gray-900 date-cell cursor-pointer"
       >
         {d + 1 === 1 ? `${monthNames[currentDate.getMonth()]} ${d + 1}` : d + 1}
         {renderEvents(

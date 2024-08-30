@@ -22,7 +22,7 @@ type MenuProps = {
   toggleFriendRequest: () => void;
   menuRef: React.RefObject<HTMLDivElement>;
   openSearchModal: () => void;
-  openEventDetailModal: (event: EventInvite) => void;
+  openEventDetailModal: (event: EventInvite, showChatButton: boolean) => void;
 };
 
 export default function CalendarMenu({
@@ -125,7 +125,7 @@ export default function CalendarMenu({
               <button
                 type="button"
                 className="text-xxs font-bold cursor-pointer"
-                onClick={() => openEventDetailModal(invite)}
+                onClick={() => openEventDetailModal(invite, false)}
               >
                 {invite.event_name}
               </button>

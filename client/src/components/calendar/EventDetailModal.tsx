@@ -8,14 +8,20 @@ import api from '@/utils/api';
 type EventDetailModalProps = {
   event: EventDetail;
   onClose: () => void;
+  showChatButton: boolean;
 };
 
 export default function EventDetailModal({
   event,
   onClose,
+  showChatButton,
 }: EventDetailModalProps) {
   const [participants, setParticipants] = useState(event.participants);
   const [error, setError] = useState<string | null>(null);
+
+  const startChat = () => {
+    console.log('Starting chat for event:', event.event_name);
+  };
 
   useEffect(() => {
     const fetchEventDetails = async () => {
@@ -75,6 +81,17 @@ export default function EventDetailModal({
             )}
           </ul>
         </div>
+        {showChatButton && (
+          <div className="flex justify-center mt-4">
+            <button
+              type="button"
+              className="flex items-center p-2 border-none rounded bg-blue-500 text-xxs text-white h-6"
+              onClick={startChat}
+            >
+              チャットを始める
+            </button>
+          </div>
+        )}
         <div className="flex justify-center mt-4">
           <button
             type="button"
