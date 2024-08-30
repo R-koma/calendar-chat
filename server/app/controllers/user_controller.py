@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.models.user_model import User
+from app.models.event_model import EventInvite
 
 user_bp = Blueprint('user_bp', __name__)
 
@@ -44,3 +45,25 @@ def get_friends():
     ]
 
     return jsonify(friends_list), 200
+
+
+@user_bp.route('/user/event-invites', methods=['GET'])
+@jwt_required()
+def get_event_invites():
+    user_id = get_jwt_identity()
+
+    invites = EventInvite.query.filter_by(user_id=user_id, status='pending').all()
+    invites_list = [
+        {
+            'id': invite.id,
+            'event_name': invite.event.event_name,
+            'event_date': invite.event.event_date.isoformat(),
+            'meeting_time': invite.event.meeting_time,
+            'meeting_place': invite.event.meeting_place,
+            'description': invite.event.description,
+            'invited_by': invite.event.creator.username,
+        }
+        for invite in invites
+    ]
+
+    return jsonify(invites_list), 200

@@ -8,3 +8,4 @@ flask_jwt_extended==4.6.0
 flask_cors==4.0.1
 flake8==4.0.1
 black==22.3.0
+# flask_wtf==1.0.1

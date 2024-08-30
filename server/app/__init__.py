@@ -3,12 +3,15 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS
+
+# from flask_wtf.csrf import CSRFProtect
 from dotenv import load_dotenv
 from .config import Config
 
 db = SQLAlchemy()
 migrate = Migrate()
 jwt = JWTManager()
+# csrf = CSRFProtect()
 
 
 def create_app():
@@ -19,6 +22,7 @@ def create_app():
     db.init_app(app)
     migrate.init_app(app, db)
     jwt.init_app(app)
+    # csrf.init_app(app)
     CORS(app, supports_credentials=True, origins=["http://localhost:3003"])
 
     from .routes import init_routes
