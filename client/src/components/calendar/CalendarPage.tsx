@@ -1,15 +1,18 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import useDate from '@/hooks/useDate';
 import useFetchUser from '@/hooks/useFetchUser';
 import useMenu from '@/hooks/useMenu';
 import useModal from '@/hooks/useModal';
+import api from '@/utils/api';
+import { User } from '@/types/User';
+import { useFriends } from '@/contexts/FriendsContext';
 import CalendarHeader from './CalendarHeader';
 import CalendarDays from './CalendarDays';
 import CalendarMenu from './CalendarMenu';
-import CalendarEventCreateForm from './CalendarEventCreateForm';
 import SearchUser from './SearchUser';
+import CalendarEventCreateForm from './CalendarEventCreateForm';
 
 export default function CalendarPage() {
   const { user } = useFetchUser();
@@ -37,6 +40,24 @@ export default function CalendarPage() {
     openModal: openSearchModal,
     closeModal: closeSearchModal,
   } = useModal();
+
+  const { setFriends } = useFriends();
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchFriends = async () => {
+      try {
+        const response = await api.get<User[]>('/user/friends');
+        setFriends(response.data);
+      } catch (err) {
+        setError('友達の取得に失敗しました');
+      }
+    };
+
+    fetchFriends().catch(() => {
+      setError('友達の取得に失敗しました');
+    });
+  }, [setFriends]);
 
   if (!user) {
     return <div>Loading...</div>;
@@ -82,6 +103,7 @@ export default function CalendarPage() {
           </div>
         </div>
       )}
+      {error && <p className="text-red-500">{error}</p>}
     </div>
   );
 }

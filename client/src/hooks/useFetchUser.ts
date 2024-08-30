@@ -30,7 +30,6 @@ const useFetchUser = () => {
       }
     };
 
-    // awaitでloadUserを呼び出す
     loadUser().catch(() => {
       setError('Failed to load user.');
     });

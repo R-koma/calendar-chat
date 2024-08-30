@@ -1,9 +1,19 @@
+'use client';
+
+import api from '@/utils/api';
 import {
   getMonthNames,
   getMonthStartEnd,
   getPrevMonthEndDate,
   getWeekdays,
 } from '@/utils/dateUtils';
+import { useEffect, useState } from 'react';
+
+type Event = {
+  id: number;
+  event_name: string;
+  event_date: string;
+};
 
 type DaysProps = {
   currentDate: Date;
@@ -13,6 +23,40 @@ export default function CalendarDays({ currentDate }: DaysProps) {
   const weekdays = getWeekdays();
   const monthNames = getMonthNames();
   const { startDate, endDate } = getMonthStartEnd(currentDate);
+  const [events, setEvents] = useState<Event[]>([]);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const response = await api.get<Event[]>(
+          '/event/user/participated-events',
+          {
+            params: {
+              month: currentDate.getMonth() + 1,
+              year: currentDate.getFullYear(),
+            },
+          },
+        );
+        setEvents(response.data);
+      } catch (err) {
+        setError('イベントの取得に失敗しました');
+      }
+    };
+
+    fetchEvents().catch(() => {
+      setError('イベントの取得に失敗しました');
+    });
+  }, [currentDate]);
+
+  const renderEvent = (date: Date) => {
+    const event = events.find(
+      (e) => new Date(e.event_date).getDate() === date.getDate(),
+    );
+    return event ? (
+      <div className="text-xs text-blue-500">{event.event_name}</div>
+    ) : null;
+  };
 
   const weekdayElements = weekdays.map((day) => (
     <div
@@ -44,6 +88,9 @@ export default function CalendarDays({ currentDate }: DaysProps) {
         className="p-4 border border-gray-200 text-xs text-gray-900 date-cell"
       >
         {d + 1 === 1 ? `${monthNames[currentDate.getMonth()]} ${d + 1}` : d + 1}
+        {renderEvent(
+          new Date(currentDate.getFullYear(), currentDate.getMonth(), d + 1),
+        )}
       </div>
     ),
   );

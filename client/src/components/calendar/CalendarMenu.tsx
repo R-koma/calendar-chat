@@ -1,10 +1,13 @@
+'use client';
+
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
-import { useEffect, useState } from 'react';
-import { User } from '@/types/User';
 import api from '@/utils/api';
+import { EventInvite, User } from '@/types/User';
+import { useFriends } from '@/contexts/FriendsContext';
+import { useEffect, useState } from 'react';
 import LogoutButton from '../auth/LogoutButton';
 import FriendRequests from './FriendRequest';
 
@@ -33,29 +36,23 @@ export default function CalendarMenu({
   menuRef,
   openSearchModal,
 }: MenuProps) {
-  const [friends, setFriends] = useState<User[]>([]);
+  const { friends, setFriends, fetchFriends } = useFriends();
+
+  const [eventInvites, setEventInvites] = useState<EventInvite[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    let isMounted = true;
-    const fetchFriends = async () => {
+    const fetchEventInvites = async () => {
       try {
-        const response = await api.get<User[]>('/user/friends');
-        setFriends(response.data);
+        const response = await api.get<EventInvite[]>('/user/event-invites');
+        setEventInvites(response.data);
       } catch (err) {
-        setError('友達の取得に失敗しました');
+        setError('イベント招待の取得に失敗しました');
       }
     };
-
-    fetchFriends().catch(() => {
-      if (isMounted) {
-        setError('友達の取得に失敗しました');
-      }
+    fetchEventInvites().catch(() => {
+      setError('イベント招待の取得に失敗しました');
     });
-
-    return () => {
-      isMounted = false;
-    };
   }, []);
 
   const addFriend = (newFriend: User) => {
@@ -90,7 +87,35 @@ export default function CalendarMenu({
         <AddIcon className="icon-extra-small" />
         イベント作成
       </button>
-
+      <div className="p-2">
+        <div className="text-xxs font-bold mb-2">イベント招待リスト</div>
+        {eventInvites.length > 0 ? (
+          eventInvites.map((invite) => (
+            <div key={invite.id} className="mb-2">
+              <div className="text-xxs font-bold">{invite.event_name}</div>
+              <div className="flex justify-between">
+                <button
+                  type="button"
+                  onClick={() => handleRespondToInvite(invite.id, 'accepted')}
+                  className="text-xs text-green-500"
+                >
+                  参加
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleRespondToInvite(invite.id, 'declined')}
+                  className="text-xs text-red-500"
+                >
+                  不参加
+                </button>
+              </div>
+            </div>
+          ))
+        ) : (
+          <div className="text-xxs text-gray-400">招待がありません</div>
+        )}
+      </div>
+      {error && <p className="text-red-500">{error}</p>}
       <div className="p-2">
         <div
           className="flex items-center px-2 pt-2 cursor-pointer"
@@ -145,7 +170,15 @@ export default function CalendarMenu({
             )}
           </div>
         )}
-        {error && <p className="text-red-500">{error}</p>}
+        <div>
+          <button
+            type="button"
+            className="flex items-center ml-1 p-1 text-xxs bg-gray-700 border rounded-full"
+            onClick={fetchFriends}
+          >
+            友達リストを更新
+          </button>
+        </div>
       </div>
       <div className="p-2">
         <div
