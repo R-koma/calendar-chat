@@ -2,6 +2,8 @@
 
 import CloseIcon from '@mui/icons-material/Close';
 import { EventDetail } from '@/types/Event';
+import { useEffect, useState } from 'react';
+import api from '@/utils/api';
 
 type EventDetailModalProps = {
   event: EventDetail;
@@ -12,6 +14,25 @@ export default function EventDetailModal({
   event,
   onClose,
 }: EventDetailModalProps) {
+  const [participants, setParticipants] = useState(event.participants);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchEventDetails = async () => {
+      try {
+        const response = await api.get<EventDetail>(
+          `/event/${event.id}/detail`,
+        );
+        setParticipants(response.data.participants);
+      } catch (err) {
+        setError('イベントの詳細の取得に失敗しました');
+      }
+    };
+
+    fetchEventDetails().catch(() => {
+      setError('イベントの詳細の取得に失敗しました');
+    });
+  }, [event.id]);
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
       <div className="bg-gray-800 p-6 rounded shadow-lg w-96 relative">
@@ -45,12 +66,12 @@ export default function EventDetailModal({
         <div className="mb-2">
           <div className="text-xxs font-bold">参加者</div>
           <ul className="text-xs text-gray-300">
-            {event.participants && event.participants.length > 0 ? (
-              event.participants.map((participant) => (
+            {participants.length > 0 ? (
+              participants.map((participant) => (
                 <li key={participant.id}>{participant.username}</li>
               ))
             ) : (
-              <li> </li>
+              <li>参加者がいません</li>
             )}
           </ul>
         </div>
@@ -64,6 +85,7 @@ export default function EventDetailModal({
           </button>
         </div>
       </div>
+      {error && <div className="text-red-500 text-xs mt-2">{error}</div>}
     </div>
   );
 }
