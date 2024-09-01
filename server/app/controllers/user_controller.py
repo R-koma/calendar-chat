@@ -55,7 +55,7 @@ def get_event_invites():
     invites = EventInvite.query.filter_by(user_id=user_id, status='pending').all()
     invites_list = [
         {
-            'id': invite.id,
+            'id': invite.event.id,
             'event_name': invite.event.event_name,
             'event_date': invite.event.event_date.isoformat(),
             'meeting_time': invite.event.meeting_time,
