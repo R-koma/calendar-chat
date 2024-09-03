@@ -5,11 +5,12 @@ import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
 import api from '@/utils/api';
-import { EventInvite, User } from '@/types/User';
+import { User } from '@/types/User';
 import { useFriends } from '@/contexts/FriendsContext';
 import { useEffect, useState } from 'react';
 import LogoutButton from '../auth/LogoutButton';
 import FriendRequests from './FriendRequest';
+import { EventInvite } from '@/types/Event';
 
 type MenuProps = {
   user: { username: string };
