@@ -4,6 +4,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { EventDetail } from '@/types/Event';
 import { useEffect, useState } from 'react';
 import api from '@/utils/api';
+import { useRouter } from 'next/navigation';
 
 type EventDetailModalProps = {
   event: EventDetail;
@@ -19,8 +20,14 @@ export default function EventDetailModal({
   const [participants, setParticipants] = useState(event.participants);
   const [error, setError] = useState<string | null>(null);
 
+  const router = useRouter();
+
   const startChat = () => {
-    console.log('Starting chat for event:', event.event_name);
+    if (event.id) {
+      router.push(`/chat/${event.id}`);
+    } else {
+      setError('IDが見つかりません');
+    }
   };
 
   useEffect(() => {

@@ -76,10 +76,10 @@ export default function CalendarHeader({
           onChange={(e) => setView(e.target.value)}
           className="mr-4 text-xxs text-white cursor-pointer bg-gray-800 border border-gray-500 rounded px-2 py-1 outline-none"
         >
-          <option value="day">Day</option>
-          <option value="week">Week</option>
+          {/* <option value="day">Day</option> */}
+          {/* <option value="week">Week</option> */}
           <option value="month">Month</option>
-          <option value="year">Year</option>
+          {/* <option value="year">Year</option> */}
         </select>
         <button
           onClick={logout}

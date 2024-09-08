@@ -1,9 +1,13 @@
 import logging
-
+import uuid
 from datetime import datetime
+from zoneinfo import ZoneInfo
 from flask import Blueprint, request, jsonify
+from flask_socketio import join_room, leave_room, emit
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from app.models import db, Event, EventInvite, EventParticipant, User
+from app import socketio
+from app.models import db, Event, EventInvite, EventParticipant, User, Message
+
 
 logger = logging.getLogger(__name__)
 
@@ -133,7 +137,6 @@ def respond_to_event():
 @jwt_required()
 def get_event_detail(event_id):
     try:
-
         event = Event.query.get(event_id)
         if not event:
             return jsonify({'error': 'Event not found'}), 404
@@ -145,6 +148,21 @@ def get_event_detail(event_id):
             .all()
         )
 
+        messages = (
+            Message.query.filter_by(event_id=event_id)
+            .order_by(Message.timestamp.asc())
+            .all()
+        )
+        message_list = [
+            {
+                'id': m.id,
+                'user': m.user.username,
+                'message': m.message,
+                'timestamp': m.timestamp,
+            }
+            for m in messages
+        ]
+
         participant_list = [{'id': p.id, 'username': p.username} for p in participants]
 
         event_detail = {
@@ -154,6 +172,7 @@ def get_event_detail(event_id):
             'meeting_place': event.meeting_place,
             'description': event.description,
             'participants': participant_list,
+            'messages': message_list,
         }
 
         return jsonify(event_detail), 200
@@ -161,3 +180,106 @@ def get_event_detail(event_id):
     except Exception as e:
         logger.error(f"Error fetching event details: {str(e)}")
         return jsonify({'error': str(e)}), 500
+
+
+@socketio.on('join_event_chat')
+@jwt_required()
+def handle_join_event_chat(data):
+    user_id = get_jwt_identity()
+    event_id = data.get('event_id')
+
+    logger.info(f"User {user_id} is attempting to join chat for event {event_id}")
+
+    participant = EventParticipant.query.filter_by(
+        event_id=event_id, user_id=user_id
+    ).first()
+
+    if participant:
+        logger.info(f"User {user_id} successfully joined the chat for event {event_id}")
+        join_room(str(event_id))
+
+        current_timestamp = datetime.now(ZoneInfo('UTC')).isoformat()
+
+        emit(
+            'receive_message',
+            {
+                'message': f'{participant.user.username}が参加。',
+                'user': participant.user.username,
+                'timestamp': current_timestamp,
+            },
+            room=str(event_id),
+        )
+        logger.info(f"Emitting join message for event {event_id} and user {user_id}")
+    else:
+        logger.warning(
+            f"Unauthorized attempt to join chat for event {event_id} by user {user_id}"
+        )
+        emit('error', {'message': 'Unauthorized to join this chat'}, room=request.sid)
+
+
+@socketio.on('send_message')
+@jwt_required()
+def handle_send_message(data):
+    user_id = get_jwt_identity()
+    event_id = data.get('event_id')
+    message_text = data.get('message')
+
+    logger.info(f"Received message from user {user_id}: {message_text}")
+
+    participant = EventParticipant.query.filter_by(
+        event_id=event_id, user_id=user_id
+    ).first()
+
+    if participant:
+        message_id = str(uuid.uuid4())
+        message = Message(
+            id=message_id,
+            event_id=event_id,
+            user_id=user_id,
+            message=message_text,
+            timestamp=datetime.now(ZoneInfo('UTC')),
+        )
+        try:
+            db.session.add(message)
+            db.session.commit()
+            logger.info(f"Message saved by user {user_id} to event {event_id}")
+        except Exception as e:
+            db.session.rollback()
+            logger.error(f"Failed to save message: {str(e)}")
+            emit('error', {'error': 'Failed to save message'}, to=request.sid)
+            return
+
+        current_timestamp = datetime.now(ZoneInfo('UTC')).isoformat()
+        emit(
+            'receive_message',
+            {
+                'id': message.id,
+                'user': participant.user.username,
+                'message': message.message,
+                'timestamp': current_timestamp,
+            },
+            room=str(event_id),
+            include_self=True,
+        )
+    else:
+        logger.warning(
+            f"Unauthorized attempt to send a message in event {event_id} by user {user_id}"
+        )
+        emit('error', {'error': 'Unauthorized to send message'}, to=request.sid)
+
+
+@socketio.on('leave_room')
+@jwt_required()
+def handle_leave_room(data):
+    user_id = get_jwt_identity()
+    event_id = data.get('event_id')
+
+    logger.info(f"User {user_id} is leaving chat for event {event_id}")
+
+    leave_room(str(event_id))
+    logger.info(f"User {user_id} has left the chat for event {event_id}")
+    emit(
+        'receive_message',
+        {'message': f'{User.query.get(user_id).username} has left the chat.'},
+        room=str(event_id),
+    )

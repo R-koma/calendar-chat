@@ -57,6 +57,7 @@ export default function CalendarPage() {
       meeting_place: '',
       description: '',
       participants: [],
+      messages: [],
     };
     setSelectedEvent(detailedEvent);
     setShowChatButton(showChat);

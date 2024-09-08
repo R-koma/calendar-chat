@@ -9,6 +9,7 @@ export type EventDetail = {
     id: number;
     username: string;
   }>;
+  messages: Message[];
 };
 
 export type Event = {
@@ -17,7 +18,7 @@ export type Event = {
   event_date: string;
 };
 
-export interface EventInvite {
+export type EventInvite = {
   id: number;
   event_name: string;
   event_date: string;
@@ -25,4 +26,11 @@ export interface EventInvite {
   meeting_place: string;
   description: string;
   invited_by: string;
-}
+};
+
+export type Message = {
+  id: string;
+  user: string;
+  message: string;
+  timestamp: string;
+};

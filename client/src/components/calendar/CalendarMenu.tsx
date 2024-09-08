@@ -8,9 +8,9 @@ import api from '@/utils/api';
 import { User } from '@/types/User';
 import { useFriends } from '@/contexts/FriendsContext';
 import { useEffect, useState } from 'react';
+import { EventInvite } from '@/types/Event';
 import LogoutButton from '../auth/LogoutButton';
 import FriendRequests from './FriendRequest';
-import { EventInvite } from '@/types/Event';
 
 type MenuProps = {
   user: { username: string };
@@ -39,7 +39,7 @@ export default function CalendarMenu({
   openSearchModal,
   openEventDetailModal,
 }: MenuProps) {
-  const { friends, setFriends, fetchFriends } = useFriends();
+  const { friends, setFriends } = useFriends();
 
   const [eventInvites, setEventInvites] = useState<EventInvite[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -207,15 +207,6 @@ export default function CalendarMenu({
             )}
           </div>
         )}
-        <div>
-          <button
-            type="button"
-            className="flex items-center ml-1 p-1 text-xxs bg-gray-700 border rounded-full"
-            onClick={fetchFriends}
-          >
-            友達リストを更新
-          </button>
-        </div>
       </div>
       <div className="p-2">
         <div
