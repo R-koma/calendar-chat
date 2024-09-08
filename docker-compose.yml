@@ -16,9 +16,11 @@ services:
     ports:
       - 5001:5001
     environment:
-      - FLASK_APP=app/app.py
+      - FLASK_APP=app/main.py
       - FLASK_ENV=development
+      - PYTHONPATH=/app
     env_file:
       - ./server/.env
     volumes:
       - ./server:/app
+    command: python app/main.py
