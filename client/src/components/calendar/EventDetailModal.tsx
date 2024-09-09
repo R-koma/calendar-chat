@@ -129,7 +129,7 @@ export default function EventDetailModal({
         </div>
         <div className="mb-2 flex items-center">
           <div className="w-1/3 text-xxs font-bold">参加者</div>
-          <ul className="w-1/3 flex text-xs text-gray-300">
+          <ul className="w-1/3 flex items-center text-xs text-gray-300">
             {participants.length > 0 ? (
               participants.map((participant) => (
                 <li className="mr-2" key={participant.id}>
@@ -139,17 +139,17 @@ export default function EventDetailModal({
             ) : (
               <li>参加者がいません</li>
             )}
+            {showAddFriendsButton && (
+              <button
+                type="button"
+                className="w-1/3 flex items-center text-blue-500 text-xxs font-bold"
+                onClick={handleOpenInviteModal}
+              >
+                <AddIcon className="flex icon-extra-small" />
+                追加
+              </button>
+            )}
           </ul>
-          {showAddFriendsButton && (
-            <button
-              type="button"
-              className="w-1/3 flex items-center text-blue-500 text-xxs font-bold"
-              onClick={handleOpenInviteModal}
-            >
-              <AddIcon className="icon-extra-small" />
-              追加
-            </button>
-          )}
         </div>
         <div className="mb-2 flex items-center">
           <div className="w-1/3 text-xxs font-bold">招待リスト</div>

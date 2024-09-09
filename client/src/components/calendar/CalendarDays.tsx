@@ -106,7 +106,7 @@ export default function CalendarDays({
     (_, d) => (
       <div
         key={`day-${d + 1}`}
-        className="p-0 border border-gray-200 text-xs text-gray-900 cursor-pointer overflow-hidden flex flex-col"
+        className="p-0 border border-gray-200 text-xs text-center text-gray-900 cursor-pointer overflow-hidden flex flex-col"
         style={{ height: '95px' }}
       >
         <div className="flex-none px-2 py-1">
