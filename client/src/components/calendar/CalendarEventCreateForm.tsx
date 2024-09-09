@@ -35,7 +35,6 @@ export default function CalendarEventCreateForm({
   const [description, setDescription] = useState('');
   const [invitedFriends, setInvitedFriends] = useState<User[]>([]);
   const [error, setError] = useState<string | null>(null);
-  console.log(meetingTime);
 
   const { friends } = useFriends();
 
