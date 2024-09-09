@@ -44,6 +44,10 @@ export default function SearchUser({ closeSearchModal }: SearchUserProps) {
         { receiver_id: receiverId },
         { headers: { 'X-CSRF-TOKEN': csrfToken } },
       );
+
+      setResults((prevResults) =>
+        prevResults.filter((user) => user.id !== receiverId),
+      );
     } catch (err) {
       setError('申請に失敗しました');
     }
