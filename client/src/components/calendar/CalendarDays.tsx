@@ -8,27 +8,30 @@ import {
   getWeekdays,
 } from '@/utils/dateUtils';
 import { useEffect, useState } from 'react';
-import { Event } from '@/types/Event';
+import { CalendarEvent } from '@/types/Event';
 
 type DaysProps = {
   currentDate: Date;
-  openEventDetailModal: (event: Event, showChatButton: boolean) => void;
+  openEventDetailModal: (event: CalendarEvent, showChatButton: boolean) => void;
+  events: CalendarEvent[];
+  setEvents: React.Dispatch<React.SetStateAction<CalendarEvent[]>>;
 };
 
 export default function CalendarDays({
   currentDate,
   openEventDetailModal,
+  events,
+  setEvents,
 }: DaysProps) {
   const weekdays = getWeekdays();
   const monthNames = getMonthNames();
   const { startDate, endDate } = getMonthStartEnd(currentDate);
-  const [events, setEvents] = useState<Event[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await api.get<Event[]>(
+        const response = await api.get<CalendarEvent[]>(
           '/event/user/participated-events',
           {
             params: {
@@ -46,7 +49,7 @@ export default function CalendarDays({
     fetchEvents().catch(() => {
       setError('イベントの取得に失敗しました');
     });
-  }, [currentDate]);
+  }, [currentDate, setEvents]);
 
   const renderEvents = (date: Date) => {
     const eventsForDate = events.filter(

@@ -177,6 +177,7 @@ export default function CalendarEventCreateForm({
           onInvite={handleInviteFriends}
         />
       </div>
+      {error && <p className="text-red-500">{error}</p>}
     </div>
   );
 }
