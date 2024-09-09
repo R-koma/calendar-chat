@@ -23,6 +23,7 @@
   ],
   "rules": {
     "import/prefer-default-export": "off",
+    "react/require-default-props": "off",
     "@typescript-eslint/quotes": ["error", "single"],
     "react/react-in-jsx-scope": "off",
     "prettier/prettier": ["error", { "endOfLine": "auto" }],

@@ -148,6 +148,13 @@ def get_event_detail(event_id):
             .all()
         )
 
+        invited_friends = (
+            db.session.query(User)
+            .join(EventInvite, User.id == EventInvite.user_id)
+            .filter(EventInvite.event_id == event_id, EventInvite.status == 'pending')
+            .all()
+        )
+
         messages = (
             Message.query.filter_by(event_id=event_id)
             .order_by(Message.timestamp.asc())
@@ -164,6 +171,9 @@ def get_event_detail(event_id):
         ]
 
         participant_list = [{'id': p.id, 'username': p.username} for p in participants]
+        invited_friends_list = [
+            {'id': f.id, 'username': f.username} for f in invited_friends
+        ]
 
         event_detail = {
             'event_name': event.event_name,
@@ -172,6 +182,7 @@ def get_event_detail(event_id):
             'meeting_place': event.meeting_place,
             'description': event.description,
             'participants': participant_list,
+            'invited_friends': invited_friends_list,
             'messages': message_list,
         }
 
@@ -179,6 +190,38 @@ def get_event_detail(event_id):
 
     except Exception as e:
         logger.error(f"Error fetching event details: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+
+@event_bp.route('/event/<int:event_id>/invite', methods=['POST'])
+@jwt_required()
+def invite_more_friends(event_id):
+    try:
+        data = request.get_json()
+        invitee_ids = data.get('invitees', [])
+
+        existing_invites = EventInvite.query.filter(
+            EventInvite.event_id == event_id, EventInvite.user_id.in_(invitee_ids)
+        ).all()
+
+        already_invited_ids = {invite.user_id for invite in existing_invites}
+
+        new_invitees = [
+            invitee_id
+            for invitee_id in invitee_ids
+            if invitee_id not in already_invited_ids
+        ]
+
+        for invitee_id in new_invitees:
+            invite = EventInvite(event_id=event_id, user_id=invitee_id)
+            db.session.add(invite)
+
+        db.session.commit()
+
+        return jsonify({'message': 'Friends invited successfully.'}), 201
+    except Exception as e:
+        db.session.rollback()
+        logger.error(f"Error inviting friends: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
 

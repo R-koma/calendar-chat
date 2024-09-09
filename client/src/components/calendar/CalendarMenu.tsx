@@ -23,7 +23,11 @@ type MenuProps = {
   toggleFriendRequest: () => void;
   menuRef: React.RefObject<HTMLDivElement>;
   openSearchModal: () => void;
-  openEventDetailModal: (event: EventInvite, showChatButton: boolean) => void;
+  openEventDetailModal: (
+    event: EventInvite,
+    showChatButton: boolean,
+    showAddFriendsButton: boolean,
+  ) => void;
   fetchEvents: () => void;
 };
 
@@ -90,7 +94,6 @@ export default function CalendarMenu({
         prevInvites.filter((invite) => invite.id !== eventId),
       );
     } catch (err) {
-      console.error('参加に失敗しました', err);
       setError('イベントへの参加/不参加の処理に失敗しました');
     }
   };
@@ -138,7 +141,7 @@ export default function CalendarMenu({
               <button
                 type="button"
                 className="text-xxs font-bold cursor-pointer"
-                onClick={() => openEventDetailModal(invite, false)}
+                onClick={() => openEventDetailModal(invite, false, false)}
               >
                 {invite.event_name}
               </button>
