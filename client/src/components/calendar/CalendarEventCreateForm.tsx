@@ -34,8 +34,8 @@ export default function CalendarEventCreateForm({
   const [meetingPlace, setMeetingPlace] = useState('');
   const [description, setDescription] = useState('');
   const [invitedFriends, setInvitedFriends] = useState<User[]>([]);
-  // const [isInviteModalOpen, setInviteModalOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  console.log(meetingTime);
 
   const { friends } = useFriends();
 
@@ -96,7 +96,7 @@ export default function CalendarEventCreateForm({
               イベント名
               <input
                 type="text"
-                className="w-full h-5 p-2 border rounded text-gray-700 text-xs outline-none"
+                className="w-full h-8 p-2 border rounded text-gray-700 text-xs outline-none"
                 value={eventName}
                 onChange={(e) => setEventName(e.target.value)}
               />
@@ -109,19 +109,45 @@ export default function CalendarEventCreateForm({
                 id="date-picker"
                 selected={selectedDate}
                 onChange={handleDateChange}
-                className="w-full h-5 p-2 border rounded text-gray-700 text-xxs outline-none"
+                className="w-full h-8 p-2 border rounded text-gray-700 text-xxs outline-none"
               />
             </div>
           </div>
           <div className="mb-2">
             <label className="block text-xxs font-bold">
               時間
-              <input
-                type="text"
-                className="w-full h-5 p-2 border rounded text-gray-700 text-xs outline-none"
+              <select
+                className="w-full h-8 p-2 border rounded text-gray-700 text-xs outline-none"
                 value={meetingTime}
                 onChange={(e) => setMeetingTime(e.target.value)}
-              />
+              >
+                <option value=""></option>
+                <option value="未定">未定</option>
+                <option value="00:00">0:00</option>
+                <option value="01:00">1:00</option>
+                <option value="02:00">2:00</option>
+                <option value="03:00">3:00</option>
+                <option value="04:00">4:00</option>
+                <option value="05:00">5:00</option>
+                <option value="06:00">6:00</option>
+                <option value="07:00">7:00</option>
+                <option value="08:00">8:00</option>
+                <option value="09:00">9:00</option>
+                <option value="10:00">10:00</option>
+                <option value="11:00">11:00</option>
+                <option value="12:00">12:00</option>
+                <option value="13:00">13:00</option>
+                <option value="14:00">14:00</option>
+                <option value="15:00">15:00</option>
+                <option value="16:00">16:00</option>
+                <option value="17:00">17:00</option>
+                <option value="18:00">18:00</option>
+                <option value="19:00">19:00</option>
+                <option value="20:00">20:00</option>
+                <option value="21:00">21:00</option>
+                <option value="22:00">22:00</option>
+                <option value="23:00">23:00</option>
+              </select>
             </label>
           </div>
           <div className="mb-2">
@@ -129,7 +155,7 @@ export default function CalendarEventCreateForm({
               場所
               <input
                 type="text"
-                className="w-full h-5 p-2 border rounded text-gray-700 text-xs outline-none"
+                className="w-full h-8 p-2 border rounded text-gray-700 text-xs outline-none"
                 value={meetingPlace}
                 onChange={(e) => setMeetingPlace(e.target.value)}
               />
