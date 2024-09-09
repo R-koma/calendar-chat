@@ -17,6 +17,7 @@ type ModalProps = {
   handleDateChange: (date: Date | null) => void;
   isInviteModalOpen: boolean;
   setInviteModalOpen: (isOpen: boolean) => void;
+  fetchEvents: () => void;
 };
 
 export default function CalendarEventCreateForm({
@@ -26,6 +27,7 @@ export default function CalendarEventCreateForm({
   handleDateChange,
   isInviteModalOpen,
   setInviteModalOpen,
+  fetchEvents,
 }: ModalProps) {
   const [eventName, setEventName] = useState('');
   const [meetingTime, setMeetingTime] = useState('');
@@ -68,6 +70,8 @@ export default function CalendarEventCreateForm({
         },
         { headers: { 'X-CSRF-TOKEN': csrfToken } },
       );
+
+      fetchEvents();
       closeModal();
     } catch (err) {
       setError('イベントの作成に失敗しました');

@@ -158,6 +158,7 @@ export default function CalendarPage() {
         handleDateChange={handleDateChange}
         isInviteModalOpen={isInviteModalOpen}
         setInviteModalOpen={setInviteModalOpen}
+        fetchEvents={fetchEvents}
       />
       {isEventDetailModalOpen && selectedEvent && (
         <EventDetailModal
