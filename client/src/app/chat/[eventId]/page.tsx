@@ -110,15 +110,18 @@ export default function ChatPage({ params }: { params: { eventId: string } }) {
           イベント: {eventDetail.event_name}
         </h2>
         <p>
-          <strong>内容:</strong> {eventDetail.description}
+          <strong>日付:</strong> {eventDetail.meeting_time}
+        </p>
+        <p>
+          <strong>時間:</strong> {eventDetail.meeting_time}
         </p>
         <p>
           <strong>場所:</strong> {eventDetail.meeting_place}
         </p>
         <p>
-          <strong>時間:</strong> {eventDetail.meeting_time}
+          <strong>説明:</strong> {eventDetail.description}
         </p>
-        <h3 className="font-bold mt-4">メンバー</h3>
+        <h3 className="font-bold mt-4">参加者</h3>
         <ul>
           {eventDetail.participants.map((participant) => {
             return <li key={participant.id}>{participant.username}</li>;
