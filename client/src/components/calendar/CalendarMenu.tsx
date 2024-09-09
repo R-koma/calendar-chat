@@ -132,40 +132,42 @@ export default function CalendarMenu({
       </button>
       <div className="p-2">
         <div className="text-xxs font-bold mb-4">イベント招待リスト</div>
-        {eventInvites.length > 0 ? (
-          eventInvites.map((invite) => (
-            <div
-              key={invite.id}
-              className="mb-2 flex items-center justify-between"
-            >
-              <button
-                type="button"
-                className="text-xxs font-bold cursor-pointer"
-                onClick={() => openEventDetailModal(invite, false, false)}
+        <div className="max-h-32 overflow-y-auto">
+          {eventInvites.length > 0 ? (
+            eventInvites.map((invite) => (
+              <div
+                key={invite.id}
+                className="mb-2 flex items-center justify-between"
               >
-                {invite.event_name}
-              </button>
-              <div className="flex space-x-4">
                 <button
                   type="button"
-                  onClick={() => handleRespondToInvite(invite.id, 'accepted')}
-                  className="text-xxs text-green-500"
+                  className="text-xxs font-bold cursor-pointer"
+                  onClick={() => openEventDetailModal(invite, false, false)}
                 >
-                  参加
+                  {invite.event_name}
                 </button>
-                <button
-                  type="button"
-                  onClick={() => handleRespondToInvite(invite.id, 'declined')}
-                  className="text-xxs text-red-500"
-                >
-                  不参加
-                </button>
+                <div className="flex space-x-4">
+                  <button
+                    type="button"
+                    onClick={() => handleRespondToInvite(invite.id, 'accepted')}
+                    className="text-xxs text-green-500"
+                  >
+                    参加
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleRespondToInvite(invite.id, 'declined')}
+                    className="text-xxs text-red-500"
+                  >
+                    不参加
+                  </button>
+                </div>
               </div>
-            </div>
-          ))
-        ) : (
-          <div className="text-xxs text-gray-400">招待がありません</div>
-        )}
+            ))
+          ) : (
+            <div className="text-xxs text-gray-400">招待がありません</div>
+          )}
+        </div>
       </div>
       {error && <p className="text-red-500">{error}</p>}
       <div className="p-2">
@@ -196,7 +198,7 @@ export default function CalendarMenu({
           )}
         </div>
         {friendListOpen && (
-          <div className="px-2">
+          <div className="px-2 max-h-32 overflow-y-auto">
             {friends.map((friend) =>
               friend ? (
                 <div
@@ -222,6 +224,20 @@ export default function CalendarMenu({
             )}
           </div>
         )}
+      </div>
+      <div
+        className="flex items-center p-2 cursor-pointer"
+        onClick={openSearchModal}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            openSearchModal();
+          }
+        }}
+        role="button"
+        tabIndex={0}
+      >
+        <AddIcon fontSize="small" />
+        <div className="text-xxs">友達を追加</div>
       </div>
       <div className="p-2">
         <div
@@ -250,22 +266,13 @@ export default function CalendarMenu({
             />
           )}
         </div>
-        {friendRequestOpen && <FriendRequests addFriend={addFriend} />}
+        {friendRequestOpen && (
+          <div className="max-h-32 overflow-y-auto">
+            <FriendRequests addFriend={addFriend} />
+          </div>
+        )}
       </div>
-      <div
-        className="flex items-center p-2 cursor-pointer"
-        onClick={openSearchModal}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            openSearchModal();
-          }
-        }}
-        role="button"
-        tabIndex={0}
-      >
-        <AddIcon fontSize="small" />
-        <div className="text-xxs">友達を追加</div>
-      </div>
+
       <div className="flex items-center justify-between p-2 absolute bottom-0 w-full">
         <div className="flex items-center">
           <div className="cursor-pointer text-xxs w-6 h-6 flex items-center justify-center border border-gray-500 rounded-full mr-2">
