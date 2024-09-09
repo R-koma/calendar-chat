@@ -24,6 +24,12 @@ type MenuProps = {
   menuRef: React.RefObject<HTMLDivElement>;
   openSearchModal: () => void;
   openEventDetailModal: (event: EventInvite, showChatButton: boolean) => void;
+  fetchEvents: () => void;
+};
+
+type EventResponse = {
+  event_name: string;
+  event_date: string;
 };
 
 export default function CalendarMenu({
@@ -38,6 +44,7 @@ export default function CalendarMenu({
   menuRef,
   openSearchModal,
   openEventDetailModal,
+  fetchEvents,
 }: MenuProps) {
   const { friends, setFriends } = useFriends();
 
@@ -69,16 +76,21 @@ export default function CalendarMenu({
         throw new Error('CSRF token not found');
       }
 
-      await api.post(
+      const res = await api.post<EventResponse>(
         '/event/respond',
         { event_id: eventId, response },
         { headers: { 'X-CSRF-TOKEN': csrfToken } },
       );
 
+      if (response === 'accepted' && res.status === 200) {
+        fetchEvents();
+      }
+
       setEventInvites((prevInvites) =>
         prevInvites.filter((invite) => invite.id !== eventId),
       );
     } catch (err) {
+      console.error('参加に失敗しました', err);
       setError('イベントへの参加/不参加の処理に失敗しました');
     }
   };

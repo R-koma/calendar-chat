@@ -12,7 +12,7 @@ export type EventDetail = {
   messages: Message[];
 };
 
-export type Event = {
+export type CalendarEvent = {
   id: number;
   event_name: string;
   event_date: string;

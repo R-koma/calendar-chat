@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import useDate from '@/hooks/useDate';
 import useFetchUser from '@/hooks/useFetchUser';
 import useMenu from '@/hooks/useMenu';
@@ -8,7 +8,7 @@ import useModal from '@/hooks/useModal';
 import api from '@/utils/api';
 import { useFriends } from '@/contexts/FriendsContext';
 import { User } from '@/types/User';
-import { Event, EventDetail } from '@/types/Event';
+import { CalendarEvent, EventDetail } from '@/types/Event';
 import CalendarHeader from './CalendarHeader';
 import CalendarDays from './CalendarDays';
 import CalendarMenu from './CalendarMenu';
@@ -50,7 +50,9 @@ export default function CalendarPage() {
   const [isEventDetailModalOpen, setIsEventDetailModalOpen] = useState(false);
   const [showChatButton, setShowChatButton] = useState(false);
 
-  const openEventDetailModal = (event: Event, showChat: boolean) => {
+  const [events, setEvents] = useState<CalendarEvent[]>([]);
+
+  const openEventDetailModal = (event: CalendarEvent, showChat: boolean) => {
     const detailedEvent: EventDetail = {
       ...event,
       meeting_time: '',
@@ -69,6 +71,29 @@ export default function CalendarPage() {
     setIsEventDetailModalOpen(false);
     setShowChatButton(false);
   };
+
+  const fetchEvents = useCallback(async () => {
+    try {
+      const response = await api.get<CalendarEvent[]>(
+        '/event/user/participated-events',
+        {
+          params: {
+            month: currentDate.getMonth() + 1,
+            year: currentDate.getFullYear(),
+          },
+        },
+      );
+      setEvents(response.data);
+    } catch (err) {
+      setError('イベントの取得に失敗しました');
+    }
+  }, [currentDate]);
+
+  useEffect(() => {
+    fetchEvents().catch(() => {
+      setError('イベントの取得に失敗しました');
+    });
+  }, [fetchEvents]);
 
   useEffect(() => {
     const fetchFriends = async () => {
@@ -102,6 +127,8 @@ export default function CalendarPage() {
       <CalendarDays
         currentDate={currentDate}
         openEventDetailModal={openEventDetailModal}
+        events={events}
+        setEvents={setEvents}
       />
       <CalendarMenu
         user={user}
@@ -115,6 +142,7 @@ export default function CalendarPage() {
         menuRef={menuRef}
         openSearchModal={openSearchModal}
         openEventDetailModal={openEventDetailModal}
+        fetchEvents={fetchEvents}
       />
 
       <CalendarEventCreateForm
