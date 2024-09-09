@@ -27,6 +27,9 @@ export default function EventDetailModal({
   setInviteModalOpen,
   showAddFriendsButton,
 }: EventDetailModalProps) {
+  const [meetingTime, setMeetingTime] = useState('');
+  const [meetingPlace, setMeetingPlace] = useState('');
+  const [description, setDescription] = useState('');
   const [participants, setParticipants] = useState(event.participants);
   const [invitedFriends, setInvitedFriends] = useState<User[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -48,8 +51,12 @@ export default function EventDetailModal({
         const response = await api.get<EventDetail>(
           `/event/${event.id}/detail`,
         );
+
         setParticipants(response.data.participants);
         setInvitedFriends(response.data.invited_friends || []);
+        setMeetingTime(response.data.meeting_time); // 時間を保存
+        setMeetingPlace(response.data.meeting_place); // 場所を保存
+        setDescription(response.data.description); // 説明を保存
       } catch (err) {
         setError('イベントの詳細の取得に失敗しました');
       }
@@ -110,19 +117,15 @@ export default function EventDetailModal({
         </div>
         <div className="mb-2 flex items-center">
           <div className="w-1/3 text-xxs font-bold">時間</div>
-          <div className="w-2/3 text-xs text-gray-300">
-            {event.meeting_time}
-          </div>
+          <div className="w-2/3 text-xs text-gray-300">{meetingTime}</div>
         </div>
         <div className="mb-2 flex items-center">
           <div className="w-1/3 text-xxs font-bold">場所</div>
-          <div className="w-2/3 text-xs text-gray-300">
-            {event.meeting_place}
-          </div>
+          <div className="w-2/3 text-xs text-gray-300">{meetingPlace}</div>
         </div>
         <div className="mb-2 flex items-center">
           <div className="w-1/3 text-xxs font-bold">説明</div>
-          <div className="w-2/3 text-xs text-gray-300">{event.description}</div>
+          <div className="w-2/3 text-xs text-gray-300">{description}</div>
         </div>
         <div className="mb-2 flex items-center">
           <div className="w-1/3 text-xxs font-bold">参加者</div>
