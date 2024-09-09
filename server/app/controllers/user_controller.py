@@ -1,7 +1,8 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
+from app import db
 from app.models.user_model import User
-from app.models.event_model import EventInvite
+from app.models.event_model import EventInvite, Event
 
 user_bp = Blueprint('user_bp', __name__)
 
@@ -52,7 +53,13 @@ def get_friends():
 def get_event_invites():
     user_id = get_jwt_identity()
 
-    invites = EventInvite.query.filter_by(user_id=user_id, status='pending').all()
+    invites = (
+        db.session.query(EventInvite)
+        .join(Event, Event.id == EventInvite.event_id)
+        .join(User, User.id == Event.created_by)
+        .filter(EventInvite.user_id == user_id, EventInvite.status == 'pending')
+        .all()
+    )
     invites_list = [
         {
             'id': invite.event.id,

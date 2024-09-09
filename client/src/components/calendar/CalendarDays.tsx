@@ -12,7 +12,11 @@ import { CalendarEvent } from '@/types/Event';
 
 type DaysProps = {
   currentDate: Date;
-  openEventDetailModal: (event: CalendarEvent, showChatButton: boolean) => void;
+  openEventDetailModal: (
+    event: CalendarEvent,
+    showChatButton: boolean,
+    showAddFriendsButton: boolean,
+  ) => void;
   events: CalendarEvent[];
   setEvents: React.Dispatch<React.SetStateAction<CalendarEvent[]>>;
 };
@@ -63,7 +67,7 @@ export default function CalendarDays({
             key={event.id}
             type="button"
             className="text-xs text-blue-500 block"
-            onClick={() => openEventDetailModal(event, true)}
+            onClick={() => openEventDetailModal(event, true, true)}
           >
             {event.event_name}
           </button>

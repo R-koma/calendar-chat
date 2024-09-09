@@ -9,6 +9,10 @@ export type EventDetail = {
     id: number;
     username: string;
   }>;
+  invited_friends?: Array<{
+    id: number;
+    username: string;
+  }>;
   messages: Message[];
 };
 

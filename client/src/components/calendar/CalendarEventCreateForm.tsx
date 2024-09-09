@@ -15,6 +15,8 @@ type ModalProps = {
   closeModal: () => void;
   selectedDate: Date | null;
   handleDateChange: (date: Date | null) => void;
+  isInviteModalOpen: boolean;
+  setInviteModalOpen: (isOpen: boolean) => void;
 };
 
 export default function CalendarEventCreateForm({
@@ -22,13 +24,15 @@ export default function CalendarEventCreateForm({
   closeModal,
   selectedDate,
   handleDateChange,
+  isInviteModalOpen,
+  setInviteModalOpen,
 }: ModalProps) {
   const [eventName, setEventName] = useState('');
   const [meetingTime, setMeetingTime] = useState('');
   const [meetingPlace, setMeetingPlace] = useState('');
   const [description, setDescription] = useState('');
   const [invitedFriends, setInvitedFriends] = useState<User[]>([]);
-  const [isInviteModalOpen, setInviteModalOpen] = useState(false);
+  // const [isInviteModalOpen, setInviteModalOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const { friends } = useFriends();
@@ -107,7 +111,7 @@ export default function CalendarEventCreateForm({
           </div>
           <div className="mb-2">
             <label className="block text-xxs font-bold">
-              集合時間
+              時間
               <input
                 type="text"
                 className="w-full h-5 p-2 border rounded text-gray-700 text-xs outline-none"
@@ -118,7 +122,7 @@ export default function CalendarEventCreateForm({
           </div>
           <div className="mb-2">
             <label className="block text-xxs font-bold">
-              集合場所
+              場所
               <input
                 type="text"
                 className="w-full h-5 p-2 border rounded text-gray-700 text-xs outline-none"
@@ -175,6 +179,7 @@ export default function CalendarEventCreateForm({
           closeModal={() => setInviteModalOpen(false)}
           friends={friends}
           onInvite={handleInviteFriends}
+          alreadyInvitedFriends={[]}
         />
       </div>
       {error && <p className="text-red-500">{error}</p>}

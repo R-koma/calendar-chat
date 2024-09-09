@@ -49,10 +49,15 @@ export default function CalendarPage() {
   const [selectedEvent, setSelectedEvent] = useState<EventDetail | null>(null);
   const [isEventDetailModalOpen, setIsEventDetailModalOpen] = useState(false);
   const [showChatButton, setShowChatButton] = useState(false);
-
+  const [showAddFriendsButton, setShowAddFrindsButton] = useState(false);
+  const [isInviteModalOpen, setInviteModalOpen] = useState(false);
   const [events, setEvents] = useState<CalendarEvent[]>([]);
 
-  const openEventDetailModal = (event: CalendarEvent, showChat: boolean) => {
+  const openEventDetailModal = (
+    event: CalendarEvent,
+    showChat: boolean,
+    addFriends: boolean,
+  ) => {
     const detailedEvent: EventDetail = {
       ...event,
       meeting_time: '',
@@ -63,6 +68,7 @@ export default function CalendarPage() {
     };
     setSelectedEvent(detailedEvent);
     setShowChatButton(showChat);
+    setShowAddFrindsButton(addFriends);
     setIsEventDetailModalOpen(true);
   };
 
@@ -150,12 +156,17 @@ export default function CalendarPage() {
         closeModal={closeModal}
         selectedDate={selectedDate}
         handleDateChange={handleDateChange}
+        isInviteModalOpen={isInviteModalOpen}
+        setInviteModalOpen={setInviteModalOpen}
       />
       {isEventDetailModalOpen && selectedEvent && (
         <EventDetailModal
           event={selectedEvent}
           onClose={closeEventDetailModal}
           showChatButton={showChatButton}
+          isInviteModalOpen={isInviteModalOpen}
+          setInviteModalOpen={setInviteModalOpen}
+          showAddFriendsButton={showAddFriendsButton}
         />
       )}
       {isSearchModalOpen && (

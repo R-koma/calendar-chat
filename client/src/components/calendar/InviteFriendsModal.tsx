@@ -9,6 +9,8 @@ type InviteFriendsModalProps = {
   closeModal: () => void;
   friends: User[];
   onInvite: (selectedFriends: User[]) => void;
+  alreadyInvitedFriends?: User[];
+  participants?: User[];
 };
 
 export default function InviteFriendsModal({
@@ -16,8 +18,20 @@ export default function InviteFriendsModal({
   closeModal,
   friends,
   onInvite,
+  alreadyInvitedFriends = [],
+  participants = [],
 }: InviteFriendsModalProps) {
   const [selectedFriends, setSelectedFriends] = useState<User[]>([]);
+
+  const availableFriends = friends.filter((friend: User) => {
+    const isAlreadyInvited = alreadyInvitedFriends.some(
+      (invited) => invited.id === friend.id,
+    );
+    const isParticipant = participants.some(
+      (participant) => participant.id === friend.id,
+    );
+    return !isAlreadyInvited && !isParticipant;
+  });
 
   const handleSelectFriend = (friend: User) => {
     setSelectedFriends((prev) =>
@@ -43,7 +57,9 @@ export default function InviteFriendsModal({
           className="absolute top-2 right-2 icon-extra-small cursor-pointer"
           onClick={closeModal}
         />
-        <h2 className="text-lg text-center mb-4 font-bold">友達リスト</h2>
+        <h2 className="text-lg text-center mb-4 font-bold">
+          {alreadyInvitedFriends.length > 0 ? '追加で招待' : '友達を招待'}
+        </h2>
         <div className="mb-2">
           <input
             type="text"
@@ -52,7 +68,7 @@ export default function InviteFriendsModal({
           />
         </div>
         <div className="mb-2">
-          {friends.map((friend) => (
+          {availableFriends.map((friend) => (
             <div key={friend.id} className="flex items-center mb-2">
               <input
                 type="checkbox"
@@ -77,7 +93,7 @@ export default function InviteFriendsModal({
             className="w-1/4 p-1 border-none rounded bg-blue-500 text-xxs text-white h-6"
             onClick={handleInvite}
           >
-            追加
+            招待
           </button>
         </div>
       </div>
