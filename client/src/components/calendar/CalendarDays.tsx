@@ -61,17 +61,19 @@ export default function CalendarDays({
     );
 
     return eventsForDate.length > 0 ? (
-      <div className="space-y-1">
-        {eventsForDate.map((event) => (
-          <button
-            key={event.id}
-            type="button"
-            className="text-xs text-blue-500 block"
-            onClick={() => openEventDetailModal(event, true, true)}
-          >
-            {event.event_name}
-          </button>
-        ))}
+      <div className="h-full pl-2 overflow-y-auto overflow-x-hidden relative">
+        <div className="max-h-full">
+          {eventsForDate.map((event) => (
+            <button
+              key={event.id}
+              type="button"
+              className="text-xs text-blue-500 whitespace-nowrap block"
+              onClick={() => openEventDetailModal(event, true, true)}
+            >
+              {event.event_name}
+            </button>
+          ))}
+        </div>
       </div>
     ) : null;
   };
@@ -103,12 +105,19 @@ export default function CalendarDays({
     (_, d) => (
       <div
         key={`day-${d + 1}`}
-        className="p-4 border border-gray-200 text-xs text-gray-900 date-cell cursor-pointer"
+        className="p-0 border border-gray-200 text-xs text-gray-900 cursor-pointer overflow-hidden flex flex-col"
+        style={{ height: '95px' }}
       >
-        {d + 1 === 1 ? `${monthNames[currentDate.getMonth()]} ${d + 1}` : d + 1}
-        {renderEvents(
-          new Date(currentDate.getFullYear(), currentDate.getMonth(), d + 1),
-        )}
+        <div className="flex-none px-2 py-1">
+          {d + 1 === 1
+            ? `${monthNames[currentDate.getMonth()]} ${d + 1}`
+            : d + 1}
+        </div>
+        <div className="flex-1 h-full w-full overflow-hidden">
+          {renderEvents(
+            new Date(currentDate.getFullYear(), currentDate.getMonth(), d + 1),
+          )}
+        </div>
       </div>
     ),
   );
@@ -133,8 +142,8 @@ export default function CalendarDays({
     <div className="calendar-content">
       <div className="text-gray-800 pt-0 w-full">
         <div className="h-full">
-          <div className="grid grid-cols-7">{weekdayElements}</div>
-          <div className="grid grid-cols-7 h-full">
+          <div className="grid grid-cols-7 gap-0">{weekdayElements}</div>
+          <div className="grid grid-cols-7 h-full gap-0">
             {prevMonthElements}
             {currentMonthElements}
             {nextMonthElements}
