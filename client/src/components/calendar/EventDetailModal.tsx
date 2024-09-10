@@ -1,11 +1,17 @@
 'use client';
 
 import CloseIcon from '@mui/icons-material/Close';
+import PushPinIcon from '@mui/icons-material/PushPin';
+import EventIcon from '@mui/icons-material/Event';
+import QueryBuilderIcon from '@mui/icons-material/QueryBuilder';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import PersonIcon from '@mui/icons-material/Person';
+import DescriptionIcon from '@mui/icons-material/Description';
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import { EventDetail } from '@/types/Event';
 import { useEffect, useState } from 'react';
 import api from '@/utils/api';
 import { useRouter } from 'next/navigation';
-import AddIcon from '@mui/icons-material/Add';
 import { useFriends } from '@/contexts/FriendsContext';
 import { User } from '@/types/User';
 import InviteFriendsModal from './InviteFriendsModal';
@@ -54,9 +60,9 @@ export default function EventDetailModal({
 
         setParticipants(response.data.participants);
         setInvitedFriends(response.data.invited_friends || []);
-        setMeetingTime(response.data.meeting_time); // 時間を保存
-        setMeetingPlace(response.data.meeting_place); // 場所を保存
-        setDescription(response.data.description); // 説明を保存
+        setMeetingTime(response.data.meeting_time);
+        setMeetingPlace(response.data.meeting_place);
+        setDescription(response.data.description);
       } catch (err) {
         setError('イベントの詳細の取得に失敗しました');
       }
@@ -101,33 +107,57 @@ export default function EventDetailModal({
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
       <div className="bg-gray-800 p-6 rounded shadow-lg w-96 relative">
         <CloseIcon
-          className="absolute top-2 right-2 icon-extra-small cursor-pointer"
+          className="absolute top-2 right-2 cursor-pointer"
           onClick={onClose}
         />
-        <h2 className="text-lg text-center mb-4 font-bold">イベント詳細</h2>
+        <h2 className="text-md text-center mb-4 font-bold">イベント詳細</h2>
         <div className="mb-2 flex items-center">
+          <PushPinIcon
+            className="w-1/3 mr-4"
+            style={{ width: '16px', height: '16px' }}
+          />
           <div className="w-1/3 text-xxs font-bold">イベント名</div>
-          <div className="w-2/3 text-xs text-gray-300">{event.event_name}</div>
+          <div className="w-1/3 text-xs text-gray-300">{event.event_name}</div>
         </div>
         <div className="mb-2 flex items-center">
+          <EventIcon
+            className="w-1/3 mr-4"
+            style={{ width: '16px', height: '16px' }}
+          />
           <div className="w-1/3 text-xxs font-bold">日付</div>
-          <div className="w-2/3 text-xs text-gray-300">
+          <div className="w-1/3 text-xs text-gray-300">
             {new Date(event.event_date).toLocaleDateString()}
           </div>
         </div>
         <div className="mb-2 flex items-center">
+          <QueryBuilderIcon
+            className="w-1/3 mr-4"
+            style={{ width: '16px', height: '16px' }}
+          />
           <div className="w-1/3 text-xxs font-bold">時間</div>
-          <div className="w-2/3 text-xs text-gray-300">{meetingTime}</div>
+          <div className="w-1/3 text-xs text-gray-300">{meetingTime}</div>
         </div>
         <div className="mb-2 flex items-center">
+          <LocationOnIcon
+            className="w-1/3 mr-4"
+            style={{ width: '16px', height: '16px' }}
+          />
           <div className="w-1/3 text-xxs font-bold">場所</div>
-          <div className="w-2/3 text-xs text-gray-300">{meetingPlace}</div>
+          <div className="w-1/3 text-xs text-gray-300">{meetingPlace}</div>
         </div>
         <div className="mb-2 flex items-center">
+          <DescriptionIcon
+            className="w-1/3 mr-4"
+            style={{ width: '16px', height: '16px' }}
+          />
           <div className="w-1/3 text-xxs font-bold">説明</div>
-          <div className="w-2/3 text-xs text-gray-300">{description}</div>
+          <div className="w-1/3 text-xs text-gray-300">{description}</div>
         </div>
         <div className="mb-2 flex items-center">
+          <PersonIcon
+            className="w-1/3 mr-4"
+            style={{ width: '16px', height: '16px' }}
+          />
           <div className="w-1/3 text-xxs font-bold">参加者</div>
           <ul className="w-1/3 flex items-center text-xs text-gray-300">
             {participants.length > 0 ? (
@@ -140,18 +170,19 @@ export default function EventDetailModal({
               <li>参加者がいません</li>
             )}
             {showAddFriendsButton && (
-              <button
-                type="button"
-                className="w-1/3 flex items-center text-blue-500 text-xxs font-bold"
+              <PersonAddIcon
+                className="w-1/3 flex items-center text-blue-500 text-xxs font-bold cursor-pointer"
+                style={{ width: '16px', height: '16px' }}
                 onClick={handleOpenInviteModal}
-              >
-                <AddIcon className="flex icon-extra-small" />
-                追加
-              </button>
+              />
             )}
           </ul>
         </div>
         <div className="mb-2 flex items-center">
+          <PersonAddIcon
+            className="w-1/3 mr-4"
+            style={{ width: '16px', height: '16px' }}
+          />
           <div className="w-1/3 text-xxs font-bold">招待リスト</div>
           <ul className="w-1/3 flex text-xs text-gray-300">
             {invitedFriends.length > 0 ? (
