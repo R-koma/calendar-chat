@@ -69,6 +69,12 @@ export default function CalendarEventCreateForm({
         },
         { headers: { 'X-CSRF-TOKEN': csrfToken } },
       );
+      setEventName('');
+      handleDateChange(null);
+      setMeetingTime('');
+      setMeetingPlace('');
+      setDescription('');
+      setInvitedFriends([]);
 
       fetchEvents();
       closeModal();
