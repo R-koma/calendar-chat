@@ -13,6 +13,7 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import PersonIcon from '@mui/icons-material/Person';
 import DescriptionIcon from '@mui/icons-material/Description';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import SendIcon from '@mui/icons-material/Send';
 
 const socket = io(process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001', {
   withCredentials: true,
@@ -218,7 +219,7 @@ export default function ChatPage({ params }: { params: { eventId: string } }) {
             );
           })}
         </div>
-        <form className="flex">
+        <form className="flex" onSubmit={handleSendMessage}>
           <input
             type="text"
             value={message}
@@ -229,9 +230,8 @@ export default function ChatPage({ params }: { params: { eventId: string } }) {
           <button
             type="submit"
             className="ml-2 bg-blue-500 text-white rounded p-2"
-            onClick={handleSendMessage}
           >
-            送信
+            <SendIcon />
           </button>
         </form>
       </div>
