@@ -6,6 +6,13 @@ import useFetchUser from '@/hooks/useFetchUser';
 import api from '@/utils/api';
 import { EventDetail, Message } from '@/types/Event';
 import { useRouter } from 'next/navigation';
+import PushPinIcon from '@mui/icons-material/PushPin';
+import EventIcon from '@mui/icons-material/Event';
+import QueryBuilderIcon from '@mui/icons-material/QueryBuilder';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import PersonIcon from '@mui/icons-material/Person';
+import DescriptionIcon from '@mui/icons-material/Description';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 const socket = io(process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001', {
   withCredentials: true,
@@ -26,6 +33,9 @@ export default function ChatPage({ params }: { params: { eventId: string } }) {
 
   const formatTimeToJST = (timestamp: string) => {
     const date = new Date(timestamp);
+    if (isNaN(date.getTime())) {
+      return 'Invalid date';
+    }
 
     return new Intl.DateTimeFormat('ja-JP', {
       hour: '2-digit',
@@ -37,6 +47,9 @@ export default function ChatPage({ params }: { params: { eventId: string } }) {
 
   const formatDateToJST = (timestamp: string) => {
     const date = new Date(timestamp);
+    if (isNaN(date.getTime())) {
+      return 'Invalid date';
+    }
 
     return new Intl.DateTimeFormat('ja-JP', {
       month: '2-digit',
@@ -106,39 +119,66 @@ export default function ChatPage({ params }: { params: { eventId: string } }) {
   return (
     <div className="flex h-screen">
       <div className="w-1/3 bg-gray-100 p-4 ">
-        <h2 className="text-lg font-bold mb-4">
-          イベント: {eventDetail.event_name}
-        </h2>
-        <p>
-          <strong>日付:</strong> {eventDetail.meeting_time}
-        </p>
-        <p>
-          <strong>時間:</strong> {eventDetail.meeting_time}
-        </p>
-        <p>
-          <strong>場所:</strong> {eventDetail.meeting_place}
-        </p>
-        <p>
-          <strong>説明:</strong> {eventDetail.description}
-        </p>
-        <h3 className="font-bold mt-4">参加者</h3>
-        <ul>
-          {eventDetail.participants.map((participant) => {
-            return <li key={participant.id}>{participant.username}</li>;
-          })}
-        </ul>
-        <div className="flex justify-center">
-          <button
-            type="button"
-            className="bg-gray-500 text-white rounded p-1 my-4"
-            onClick={handleReturnToCalendar}
-          >
-            戻る
-          </button>
+        <div className="mb-4 flex items-start">
+          <PushPinIcon
+            className="mr-4 flex-shrink-0"
+            style={{ width: '22px', height: '22px' }}
+          />
+          <div className="text-xs flex-grow">{eventDetail.event_name}</div>
+        </div>
+
+        <div className="mb-4 flex items-start">
+          <EventIcon
+            className="mr-4 flex-shrink-0"
+            style={{ width: '22px', height: '22px' }}
+          />
+          <div className="text-xs flex-grow">
+            {new Date(eventDetail.event_date).toLocaleDateString()}
+          </div>
+        </div>
+        <div className="mb-4 flex items-start">
+          <QueryBuilderIcon
+            className="mr-4 flex-shrink-0"
+            style={{ width: '22px', height: '22px' }}
+          />
+          <div className="text-xs flex-grow">{eventDetail.meeting_time}</div>
+        </div>
+        <div className="mb-4 flex items-start">
+          <LocationOnIcon
+            className="mr-4 flex-shrink-0"
+            style={{ width: '22px', height: '22px' }}
+          />
+          <div className="text-xs flex-grow">{eventDetail.meeting_place}</div>
+        </div>
+        <div className="mb-4 flex items-start">
+          <DescriptionIcon
+            className="mr-4 flex-shrink-0"
+            style={{ width: '22px', height: '22px' }}
+          />
+          <div className="text-xs flex-grow">{eventDetail.description}</div>
+        </div>
+        <div className="mb-4 flex items-start">
+          <PersonIcon
+            className="mr-4 flex-shrink-0"
+            style={{ width: '22px', height: '22px' }}
+          />
+          <ul className="flex flex-wrap">
+            {eventDetail.participants.map((participant) => {
+              return (
+                <li className="mr-2 text-xs" key={participant.id}>
+                  {participant.username}
+                </li>
+              );
+            })}
+          </ul>
         </div>
       </div>
       {error && <div className="text-red-500">{error}</div>}
       <div className="w-2/3 bg-white p-4">
+        <ArrowBackIcon
+          className="cursor-pointer"
+          onClick={handleReturnToCalendar}
+        />
         <div className="h-5/6 overflow-y-auto mb-4">
           {messages.map((msg, index) => {
             const currentDate = new Date(msg.timestamp).toLocaleDateString();
