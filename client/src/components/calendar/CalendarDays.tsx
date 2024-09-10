@@ -67,7 +67,7 @@ export default function CalendarDays({
             <button
               key={event.id}
               type="button"
-              className="w-full text-xs mb-2 p-0.5 bg-blue-400 rounded-sm whitespace-nowrap block overflow-hidden text-ellipsis"
+              className="w-full text-xxxs text-left mb-2 pl-1 p-0.1 bg-blue-400 rounded-sm whitespace-nowrap block overflow-hidden text-ellipsis"
               style={{ maxWidth: '100px' }}
               onClick={() => openEventDetailModal(event, true, true)}
             >
