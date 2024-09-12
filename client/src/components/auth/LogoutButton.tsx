@@ -14,7 +14,7 @@ export default function LogoutButton() {
         type="button"
         aria-label="Logout"
       >
-        <LogoutIcon fontSize="small" />
+        <LogoutIcon style={{ fontSize: '16px' }} />
       </button>
     </div>
   );
