@@ -68,7 +68,6 @@ def update_event(event_id):
 
         data = request.get_json()
 
-        # イベント情報を更新
         event.event_name = data.get('event_name', event.event_name)
         event.event_date = (
             datetime.fromisoformat(data.get('event_date').replace('Z', '+00:00'))

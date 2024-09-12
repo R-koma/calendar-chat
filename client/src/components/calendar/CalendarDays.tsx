@@ -19,6 +19,8 @@ type DaysProps = {
   ) => void;
   events: CalendarEvent[];
   setEvents: React.Dispatch<React.SetStateAction<CalendarEvent[]>>;
+  openModal: () => void;
+  handleDateChange: (date: Date | null) => void;
 };
 
 export default function CalendarDays({
@@ -26,6 +28,8 @@ export default function CalendarDays({
   openEventDetailModal,
   events,
   setEvents,
+  openModal,
+  handleDateChange,
 }: DaysProps) {
   const weekdays = getWeekdays();
   const monthNames = getMonthNames();
@@ -70,7 +74,10 @@ export default function CalendarDays({
               className="w-full text-gray-800 text-xxxs text-left mb-2 pl-1 p-0.1 
               bg-blue-400 rounded-sm whitespace-nowrap block overflow-hidden text-ellipsis"
               style={{ maxWidth: '100px' }}
-              onClick={() => openEventDetailModal(event, true, true)}
+              onClick={(e) => {
+                e.stopPropagation();
+                openEventDetailModal(event, true, true);
+              }}
             >
               {event.event_name}
             </button>
@@ -132,6 +139,10 @@ export default function CalendarDays({
           }
             ${isToday ? 'bg-blue-300' : ''}`}
           style={{ height: '95px' }}
+          onClick={() => {
+            handleDateChange(currentDateDisplay);
+            openModal();
+          }}
         >
           <div className="flex-none px-2 py-1">
             {d + 1 === 1

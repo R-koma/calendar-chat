@@ -135,6 +135,8 @@ export default function CalendarPage() {
         openEventDetailModal={openEventDetailModal}
         events={events}
         setEvents={setEvents}
+        openModal={openModal}
+        handleDateChange={handleDateChange}
       />
       <CalendarMenu
         user={user}
