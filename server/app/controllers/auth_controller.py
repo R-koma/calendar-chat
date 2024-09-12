@@ -69,7 +69,7 @@ def get_user():
     user_id = get_jwt_identity()
     user = User.query.get(user_id)
     if user:
-        return jsonify(username=user.username, email=user.email), 200
+        return jsonify(id=user.id, username=user.username, email=user.email), 200
     return jsonify({"msg": "User not found"}), 404
 
 

@@ -5,6 +5,7 @@ export type EventDetail = {
   meeting_time: string;
   meeting_place: string;
   description: string;
+  created_by: number;
   participants: Array<{
     id: number;
     username: string;

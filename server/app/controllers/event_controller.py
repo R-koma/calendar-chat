@@ -56,6 +56,63 @@ def create_event():
         return jsonify({'error': str(e)}), 500
 
 
+@event_bp.route('/event/<int:event_id>/update', methods=['PUT'])
+@jwt_required()
+def update_event(event_id):
+    try:
+        user_id = get_jwt_identity()
+        event = Event.query.get(event_id)
+
+        if not event or event.created_by != user_id:
+            return jsonify({'error': 'Event not found or unauthorized'}), 404
+
+        data = request.get_json()
+
+        # イベント情報を更新
+        event.event_name = data.get('event_name', event.event_name)
+        event.event_date = (
+            datetime.fromisoformat(data.get('event_date').replace('Z', '+00:00'))
+            if data.get('event_date')
+            else event.event_date
+        )
+        event.meeting_time = data.get('meeting_time', event.meeting_time)
+        event.meeting_place = data.get('meeting_place', event.meeting_place)
+        event.description = data.get('description', event.description)
+
+        db.session.commit()
+
+        return jsonify({'message': 'Event updated successfully'}), 200
+    except Exception as e:
+        db.session.rollback()
+        logger.error(f"Error updating event: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+
+@event_bp.route('/event/<int:event_id>/delete', methods=['DELETE'])
+@jwt_required()
+def delete_event(event_id):
+    try:
+        user_id = get_jwt_identity()
+        event = Event.query.get(event_id)
+
+        if not event or event.created_by != user_id:
+            return jsonify({'error': 'Event not found or unauthorized'}), 404
+
+        EventParticipant.query.filter_by(event_id=event_id).delete()
+        EventInvite.query.filter_by(event_id=event_id).delete()
+
+        Message.query.filter_by(event_id=event_id).delete()
+
+        db.session.delete(event)
+        db.session.commit()
+
+        return jsonify({'message': 'Event deleted successfully'}), 200
+    except Exception as e:
+        db.session.rollback()
+        logger.error(f"Error deleting event: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+
 @event_bp.route('/event/user/participated-events', methods=['GET'])
 @jwt_required()
 def get_participated_events():
@@ -184,6 +241,7 @@ def get_event_detail(event_id):
             'participants': participant_list,
             'invited_friends': invited_friends_list,
             'messages': message_list,
+            'created_by': event.created_by,
         }
 
         return jsonify(event_detail), 200

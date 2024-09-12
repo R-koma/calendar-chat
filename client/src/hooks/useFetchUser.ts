@@ -2,14 +2,17 @@ import { useState, useEffect } from 'react';
 import api from '../utils/api';
 
 type UserResponse = {
+  id: number;
   username: string;
   email: string;
 };
 
 const useFetchUser = () => {
-  const [user, setUser] = useState<{ username: string; email: string } | null>(
-    null,
-  );
+  const [user, setUser] = useState<{
+    id: number;
+    username: string;
+    email: string;
+  } | null>(null);
   const [error, setError] = useState('');
 
   const fetchUser = async (): Promise<void> => {
