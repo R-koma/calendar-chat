@@ -124,7 +124,7 @@ export default function CalendarMenu({
       </div>
       <button
         type="button"
-        className="flex items-center ml-1 p-1 text-xxs bg-gray-700 border rounded-full"
+        className="flex items-center my-2 ml-1 p-1 text-xxs bg-gray-700 border rounded-full"
         onClick={openModal}
       >
         <AddIcon className="icon-extra-small" />
