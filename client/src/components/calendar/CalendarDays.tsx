@@ -102,7 +102,7 @@ export default function CalendarDays({
     (_, i) => (
       <div
         key={`prev-month-day-${prevMonthEndDate.getDate() - (prevMonthDays - 1 - i)}`}
-        className="p-4 border border-gray-200  text-gray-400 date-cell"
+        className="p-0 border border-gray-200  text-gray-400 date-cell"
       >
         {prevMonthEndDate.getDate() - (prevMonthDays - 1 - i)}
       </div>

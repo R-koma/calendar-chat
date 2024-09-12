@@ -30,44 +30,52 @@ export default function CalendarHeader({
           fontSize="small"
           className="mr-4 cursor-pointer"
           onClick={toggleMenu}
+          aria-label="Toggle Menu"
         />
         <div className="font-bold cursor-pointer">CC</div>
       </div>
       <div className="flex-1 flex justify-center items-center">
-        <div className="flex justify-center items-center mx-2 px-2 py-1 border border-gray-500 rounded">
+        <div className="flex items-center mx-2 px-2 py-1 border border-gray-500 rounded">
           <button
             type="button"
             onClick={() => setCurrentDate(new Date())}
-            className=" bg-gray-800 text-blue-600 font-bold text-xxs"
+            className="text-blue-600 hover:text-blue-400 font-bold text-xxs bg-gray-800 p-0.5"
           >
             Today
           </button>
         </div>
-        <ArrowBackIosIcon
-          className="mx-2 cursor-pointer"
-          fontSize="small"
-          onClick={() =>
-            setCurrentDate(
-              new Date(currentDate.setMonth(currentDate.getMonth() - 1)),
-            )
-          }
-        />
-        <div className="cursor-pointer font-medium mx-2 text-xs">
-          {currentDate.toLocaleDateString('ja-JP', {
-            year: 'numeric',
-            month: 'long',
-          })}
+        <div className="flex items-center">
+          <ArrowBackIosIcon
+            className="cursor-pointer mx-2"
+            style={{ fontSize: '16px' }}
+            onClick={() =>
+              setCurrentDate(
+                new Date(
+                  new Date(currentDate).setMonth(currentDate.getMonth() - 1),
+                ),
+              )
+            }
+            aria-label="Previous Month"
+          />
+          <div className="cursor-pointer font-medium mx-2 text-xs">
+            {currentDate.toLocaleDateString('ja-JP', {
+              year: 'numeric',
+              month: 'long',
+            })}
+          </div>
+          <ArrowForwardIosIcon
+            className="cursor-pointer mx-2"
+            style={{ fontSize: '16px' }}
+            onClick={() =>
+              setCurrentDate(
+                new Date(
+                  new Date(currentDate).setMonth(currentDate.getMonth() + 1),
+                ),
+              )
+            }
+            aria-label="Next Month"
+          />
         </div>
-
-        <ArrowForwardIosIcon
-          className="mx-2 cursor-pointer"
-          fontSize="small"
-          onClick={() =>
-            setCurrentDate(
-              new Date(currentDate.setMonth(currentDate.getMonth() + 1)),
-            )
-          }
-        />
       </div>
       <div className="flex items-center justify-end text-xs">
         <SearchIcon fontSize="small" className="mr-4 cursor-pointer" />
