@@ -1,7 +1,7 @@
 import logging
 
 from datetime import timedelta
-from flask import Blueprint, request, jsonify, make_response
+from flask import request, jsonify, make_response
 from flask_jwt_extended import (
     create_access_token,
     set_access_cookies,
@@ -14,10 +14,7 @@ from app.models.user_model import User
 from app import db
 from app.utils.token_utils import revoke_token
 
-auth_bp = Blueprint('auth_bp', __name__)
 
-
-@auth_bp.route('/auth/register', methods=['POST'])
 def register_user():
     data = request.get_json()
     username = data.get('username')
@@ -41,7 +38,6 @@ def register_user():
     return jsonify({'message': 'User registered successfully'}), 201
 
 
-@auth_bp.route('/auth/login', methods=['POST'])
 def login_user():
     data = request.get_json()
     email = data.get('email')
@@ -63,7 +59,6 @@ def login_user():
         return jsonify({"message": "Invalid email or password"}), 401
 
 
-@auth_bp.route('/auth/user', methods=['GET'])
 @jwt_required()
 def get_user():
     user_id = get_jwt_identity()
@@ -73,7 +68,6 @@ def get_user():
     return jsonify({"msg": "User not found"}), 404
 
 
-@auth_bp.route('/auth/logout', methods=['POST'])
 @jwt_required()
 def logout_user():
     jwt_data = get_jwt()
@@ -88,7 +82,6 @@ def logout_user():
     return response
 
 
-@auth_bp.route('/auth/protected', methods=['GET'])
 @jwt_required()
 def protected():
     current_user = get_jwt_identity()

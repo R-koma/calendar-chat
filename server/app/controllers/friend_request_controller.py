@@ -1,11 +1,8 @@
-from flask import Blueprint, request, jsonify
+from flask import request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.models import db, FriendRequest, User
 
-friend_bp = Blueprint('friend_bp', __name__)
 
-
-@friend_bp.route('/friend/request', methods=['POST'])
 @jwt_required()
 def send_friend_request():
     receiver_id = request.json.get('receiver_id')
@@ -28,7 +25,6 @@ def send_friend_request():
     return jsonify({'message': 'リクエストを送りました。'}), 201
 
 
-@friend_bp.route('/friend/requests', methods=['GET'])
 @jwt_required()
 def get_friend_requests():
     user_id = get_jwt_identity()
@@ -47,7 +43,6 @@ def get_friend_requests():
     )
 
 
-@friend_bp.route('/friend/request/<int:id>/respond', methods=['POST'])
 @jwt_required()
 def respond_to_friend_request(request_id):
     action = request.json.get('action')
