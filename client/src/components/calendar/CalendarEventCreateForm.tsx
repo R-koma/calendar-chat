@@ -1,11 +1,9 @@
-'use client';
-
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
-import { useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useFriends } from '@/contexts/FriendsContext';
+import { useEventForm } from '@/hooks/useEventForm';
 import { User } from '@/types/User';
 import api from '@/utils/api';
 import InviteFriendsModal from './InviteFriendsModal';
@@ -29,12 +27,20 @@ export default function CalendarEventCreateForm({
   setInviteModalOpen,
   fetchEvents,
 }: ModalProps) {
-  const [eventName, setEventName] = useState('');
-  const [meetingTime, setMeetingTime] = useState('');
-  const [meetingPlace, setMeetingPlace] = useState('');
-  const [description, setDescription] = useState('');
-  const [invitedFriends, setInvitedFriends] = useState<User[]>([]);
-  const [error, setError] = useState<string | null>(null);
+  const {
+    eventName,
+    setEventName,
+    meetingTime,
+    setMeetingTime,
+    meetingPlace,
+    setMeetingPlace,
+    description,
+    setDescription,
+    invitedFriends,
+    setInvitedFriends,
+    error,
+    setError,
+  } = useEventForm();
 
   const { friends } = useFriends();
 
