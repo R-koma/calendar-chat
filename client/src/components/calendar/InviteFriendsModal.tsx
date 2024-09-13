@@ -1,8 +1,8 @@
 'use client';
 
+import CloseIcon from '@mui/icons-material/Close';
 import React, { useState } from 'react';
 import { User } from '@/types/User';
-import CloseIcon from '@mui/icons-material/Close';
 
 type InviteFriendsModalProps = {
   isOpen: boolean;

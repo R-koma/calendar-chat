@@ -1,8 +1,8 @@
-import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
 import CssBaseline from '@mui/material/CssBaseline';
-import './globals.css';
+import { Inter } from 'next/font/google';
 import { FriendsProvider } from '@/contexts/FriendsContext';
+import type { Metadata } from 'next';
+import './globals.css';
 
 const inter = Inter({ subsets: ['latin'] });
 

@@ -1,8 +1,8 @@
-import React from 'react';
-import SearchIcon from '@mui/icons-material/Search';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import MenuIcon from '@mui/icons-material/Menu';
+import SearchIcon from '@mui/icons-material/Search';
+import React from 'react';
 import { useAuth } from '@/hooks/useAuth';
 
 type CalendarHeaderProps = {

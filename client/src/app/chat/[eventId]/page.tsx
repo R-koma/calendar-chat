@@ -1,19 +1,19 @@
 'use client';
 
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import DescriptionIcon from '@mui/icons-material/Description';
+import EventIcon from '@mui/icons-material/Event';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import PersonIcon from '@mui/icons-material/Person';
+import PushPinIcon from '@mui/icons-material/PushPin';
+import QueryBuilderIcon from '@mui/icons-material/QueryBuilder';
+import SendIcon from '@mui/icons-material/Send';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState, FormEvent, useRef } from 'react';
 import io from 'socket.io-client';
 import useFetchUser from '@/hooks/useFetchUser';
-import api from '@/utils/api';
 import { EventDetail, Message } from '@/types/Event';
-import { useRouter } from 'next/navigation';
-import PushPinIcon from '@mui/icons-material/PushPin';
-import EventIcon from '@mui/icons-material/Event';
-import QueryBuilderIcon from '@mui/icons-material/QueryBuilder';
-import LocationOnIcon from '@mui/icons-material/LocationOn';
-import PersonIcon from '@mui/icons-material/Person';
-import DescriptionIcon from '@mui/icons-material/Description';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import SendIcon from '@mui/icons-material/Send';
+import api from '@/utils/api';
 
 const socket = io(process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001', {
   withCredentials: true,
@@ -34,7 +34,7 @@ export default function ChatPage({ params }: { params: { eventId: string } }) {
 
   const formatTimeToJST = (timestamp: string) => {
     const date = new Date(timestamp);
-    if (isNaN(date.getTime())) {
+    if (Number.isNaN(date.getTime())) {
       return 'Invalid date';
     }
 
@@ -48,7 +48,7 @@ export default function ChatPage({ params }: { params: { eventId: string } }) {
 
   const formatDateToJST = (timestamp: string) => {
     const date = new Date(timestamp);
-    if (isNaN(date.getTime())) {
+    if (Number.isNaN(date.getTime())) {
       return 'Invalid date';
     }
 

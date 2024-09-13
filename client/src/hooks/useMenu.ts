@@ -1,8 +1,8 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { UseMenuReturnType } from '../types/useMenu';
 import useMenuOpen from './useMenuOpen';
+import { UseMenuReturnType } from '../types/useMenu';
 
 const useMenu = (): UseMenuReturnType => {
   const { menuOpen, setMenuOpen, toggleMenu } = useMenuOpen();

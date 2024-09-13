@@ -1,16 +1,16 @@
 'use client';
 
+import AddIcon from '@mui/icons-material/Add';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
-import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
-import api from '@/utils/api';
-import { User } from '@/types/User';
-import { useFriends } from '@/contexts/FriendsContext';
 import { useEffect, useState } from 'react';
+import { useFriends } from '@/contexts/FriendsContext';
 import { EventInvite } from '@/types/Event';
-import LogoutButton from '../auth/LogoutButton';
+import { User } from '@/types/User';
+import api from '@/utils/api';
 import FriendRequests from './FriendRequest';
+import LogoutButton from '../auth/LogoutButton';
 
 type MenuProps = {
   user: { username: string };
