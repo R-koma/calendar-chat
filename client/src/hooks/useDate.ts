@@ -1,7 +1,7 @@
 'use client';
 
-import { UseDateReturnType } from '@/types/useDate';
 import { useState } from 'react';
+import { UseDateReturnType } from '@/types/useDate';
 
 const useDate = (): UseDateReturnType => {
   const [currentDate, setCurrentDate] = useState(new Date());

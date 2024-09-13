@@ -1,7 +1,7 @@
 'use client';
 
-import React from 'react';
 import LogoutIcon from '@mui/icons-material/Logout';
+import React from 'react';
 import { useAuth } from '../../hooks/useAuth';
 
 export default function LogoutButton() {

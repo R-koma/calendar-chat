@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
-import api from '@/utils/api';
-import { User } from '@/types/User';
 import PersonIcon from '@mui/icons-material/Person';
+import React, { useState } from 'react';
+import { User } from '@/types/User';
+import api from '@/utils/api';
 
 type SearchUserProps = {
   closeSearchModal: () => void;

@@ -1,24 +1,24 @@
 'use client';
 
+import ChatIcon from '@mui/icons-material/Chat';
 import CloseIcon from '@mui/icons-material/Close';
-import PushPinIcon from '@mui/icons-material/PushPin';
+import DeleteIcon from '@mui/icons-material/Delete';
+import DescriptionIcon from '@mui/icons-material/Description';
+import EditIcon from '@mui/icons-material/Edit';
 import EventIcon from '@mui/icons-material/Event';
-import QueryBuilderIcon from '@mui/icons-material/QueryBuilder';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import PersonIcon from '@mui/icons-material/Person';
-import DescriptionIcon from '@mui/icons-material/Description';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import ChatIcon from '@mui/icons-material/Chat';
-import { EventDetail } from '@/types/Event';
-import { useEffect, useState } from 'react';
-import api from '@/utils/api';
+import PushPinIcon from '@mui/icons-material/PushPin';
+import QueryBuilderIcon from '@mui/icons-material/QueryBuilder';
 import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import { useFriends } from '@/contexts/FriendsContext';
-import { User } from '@/types/User';
-import InviteFriendsModal from './InviteFriendsModal';
 import useFetchUser from '@/hooks/useFetchUser';
+import { EventDetail } from '@/types/Event';
+import { User } from '@/types/User';
+import api from '@/utils/api';
+import InviteFriendsModal from './InviteFriendsModal';
 
 type EventDetailModalProps = {
   event: EventDetail;
@@ -44,7 +44,7 @@ export default function EventDetailModal({
   const [description, setDescription] = useState('');
   const [participants, setParticipants] = useState(event.participants);
   const [invitedFriends, setInvitedFriends] = useState<User[]>([]);
-  const [created_by, setCreated_by] = useState(event.created_by);
+  const [createdBy, setCreatedBy] = useState(event.created_by);
   const [error, setError] = useState<string | null>(null);
   const handleOpenInviteModal = () => setInviteModalOpen(true);
   const router = useRouter();
@@ -71,7 +71,7 @@ export default function EventDetailModal({
         setMeetingTime(response.data.meeting_time);
         setMeetingPlace(response.data.meeting_place);
         setDescription(response.data.description);
-        setCreated_by(response.data.created_by);
+        setCreatedBy(response.data.created_by);
       } catch (err) {
         setError('イベントの詳細の取得に失敗しました');
       }
@@ -134,7 +134,7 @@ export default function EventDetailModal({
           event_name: eventName,
           meeting_time: meetingTime,
           meeting_place: meetingPlace,
-          description: description,
+          description,
         },
         { headers: { 'X-CSRF-TOKEN': csrfToken } },
       );
@@ -171,7 +171,7 @@ export default function EventDetailModal({
           <h2 className="flex justify-center text-md text-center mr-4 font-bold">
             イベント詳細
           </h2>
-          {user?.id === created_by && (
+          {user?.id === createdBy && (
             <div className="flex items-center">
               {!isEditing && (
                 <button
@@ -213,7 +213,7 @@ export default function EventDetailModal({
                   value={meetingTime}
                   onChange={(e) => setMeetingTime(e.target.value)}
                 >
-                  <option value=""></option>
+                  <option value="" />
                   <option value="未定">未定</option>
                   <option value="00:00">0:00</option>
                   <option value="01:00">1:00</option>
@@ -265,12 +265,14 @@ export default function EventDetailModal({
             </div>
             <div className="flex justify-center space-x-2">
               <button
+                type="button"
                 onClick={handleUpdateEvent}
                 className="flex items-center p-2 border-none rounded bg-blue-700 text-xxs text-white h-6"
               >
                 更新
               </button>
               <button
+                type="button"
                 onClick={() => setIsEditing(false)}
                 className="flex items-center p-2 border-none rounded bg-gray-400 text-xxs text-white h-6"
               >

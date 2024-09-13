@@ -1,20 +1,20 @@
 'use client';
 
 import React, { useCallback, useEffect, useState } from 'react';
+import { useFriends } from '@/contexts/FriendsContext';
 import useDate from '@/hooks/useDate';
 import useFetchUser from '@/hooks/useFetchUser';
 import useMenu from '@/hooks/useMenu';
 import useModal from '@/hooks/useModal';
-import api from '@/utils/api';
-import { useFriends } from '@/contexts/FriendsContext';
-import { User } from '@/types/User';
 import { CalendarEvent, EventDetail } from '@/types/Event';
-import CalendarHeader from './CalendarHeader';
+import { User } from '@/types/User';
+import api from '@/utils/api';
 import CalendarDays from './CalendarDays';
-import CalendarMenu from './CalendarMenu';
-import SearchUser from './SearchUser';
 import CalendarEventCreateForm from './CalendarEventCreateForm';
+import CalendarHeader from './CalendarHeader';
+import CalendarMenu from './CalendarMenu';
 import EventDetailModal from './EventDetailModal';
+import SearchUser from './SearchUser';
 
 export default function CalendarPage() {
   const { user } = useFetchUser();

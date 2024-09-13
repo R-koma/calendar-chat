@@ -1,13 +1,13 @@
 'use client';
 
-import { useState } from 'react';
-import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
+import CloseIcon from '@mui/icons-material/Close';
+import { useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import { useFriends } from '@/contexts/FriendsContext';
 import { User } from '@/types/User';
 import api from '@/utils/api';
-import { useFriends } from '@/contexts/FriendsContext';
 import InviteFriendsModal from './InviteFriendsModal';
 
 type ModalProps = {
@@ -126,7 +126,7 @@ export default function CalendarEventCreateForm({
                 value={meetingTime}
                 onChange={(e) => setMeetingTime(e.target.value)}
               >
-                <option value=""></option>
+                <option value="" />
                 <option value="未定">未定</option>
                 <option value="00:00">0:00</option>
                 <option value="01:00">1:00</option>

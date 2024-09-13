@@ -1,5 +1,7 @@
 'use client';
 
+import { useEffect, useState } from 'react';
+import { CalendarEvent } from '@/types/Event';
 import api from '@/utils/api';
 import {
   getMonthNames,
@@ -7,8 +9,6 @@ import {
   getPrevMonthEndDate,
   getWeekdays,
 } from '@/utils/dateUtils';
-import { useEffect, useState } from 'react';
-import { CalendarEvent } from '@/types/Event';
 
 type DaysProps = {
   currentDate: Date;
@@ -87,16 +87,21 @@ export default function CalendarDays({
     ) : null;
   };
 
+  const getTextColor = (index: number) => {
+    if (index === 6) {
+      return 'text-blue-500';
+    }
+    if (index === 0) {
+      return 'text-red-500';
+    }
+    return 'text-gray-400';
+  };
+
   const weekdayElements = weekdays.map((day, index) => (
     <div
       key={`weekday-${day}`}
-      className={`p-0 border border-gray-200 text-xs text-center date-cell ${
-        index === 6
-          ? 'text-blue-500'
-          : index === 0
-            ? 'text-red-500'
-            : 'text-gray-400'
-      }`}
+      className={`p-0 border border-gray-200 text-xs text-center date-cell
+        ${getTextColor(index)}`}
     >
       {day}
     </div>
@@ -116,6 +121,16 @@ export default function CalendarDays({
     ),
   );
 
+  const getDayOfWeekColor = (dayOfWeek: number) => {
+    if (dayOfWeek === 0) {
+      return 'text-red-500';
+    }
+    if (dayOfWeek === 6) {
+      return 'text-blue-500';
+    }
+    return 'text-gray-900';
+  };
+
   const currentMonthElements = Array.from({ length: endDate.getDate() }).map(
     (_, d) => {
       const currentDateDisplay = new Date(
@@ -130,18 +145,21 @@ export default function CalendarDays({
       return (
         <div
           key={`day-${d + 1}`}
-          className={`p-0 border border-gray-200 text-xs text-center cursor-pointer overflow-hidden flex flex-col ${
-            dayOfWeek === 0
-              ? 'text-red-500'
-              : dayOfWeek === 6
-                ? 'text-blue-500'
-                : 'text-gray-900'
-          }
+          className={`p-0 border border-gray-200 text-xs text-center cursor-pointer overflow-hidden flex flex-col
+            ${getDayOfWeekColor(dayOfWeek)}
             ${isToday ? 'bg-blue-300' : ''}`}
           style={{ height: '95px' }}
           onClick={() => {
             handleDateChange(currentDateDisplay);
             openModal();
+          }}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              handleDateChange(currentDateDisplay);
+              openModal();
+            }
           }}
         >
           <div className="flex-none px-2 py-1">
