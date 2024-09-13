@@ -2,7 +2,7 @@ import logging
 import uuid
 from datetime import datetime
 from zoneinfo import ZoneInfo
-from flask import Blueprint, request, jsonify
+from flask import request, jsonify
 from flask_socketio import join_room, leave_room, emit
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from app import socketio
@@ -11,10 +11,7 @@ from app.models import db, Event, EventInvite, EventParticipant, User, Message
 
 logger = logging.getLogger(__name__)
 
-event_bp = Blueprint('event_bp', __name__)
 
-
-@event_bp.route('/event/create', methods=['POST'])
 @jwt_required()
 def create_event():
     try:
@@ -56,7 +53,6 @@ def create_event():
         return jsonify({'error': str(e)}), 500
 
 
-@event_bp.route('/event/<int:event_id>/update', methods=['PUT'])
 @jwt_required()
 def update_event(event_id):
     try:
@@ -87,7 +83,6 @@ def update_event(event_id):
         return jsonify({'error': str(e)}), 500
 
 
-@event_bp.route('/event/<int:event_id>/delete', methods=['DELETE'])
 @jwt_required()
 def delete_event(event_id):
     try:
@@ -112,7 +107,6 @@ def delete_event(event_id):
         return jsonify({'error': str(e)}), 500
 
 
-@event_bp.route('/event/user/participated-events', methods=['GET'])
 @jwt_required()
 def get_participated_events():
     user_id = get_jwt_identity()
@@ -159,7 +153,6 @@ def get_participated_events():
         return jsonify({'error': str(e)}), 500
 
 
-@event_bp.route('/event/respond', methods=['POST'])
 @jwt_required()
 def respond_to_event():
     try:
@@ -189,7 +182,6 @@ def respond_to_event():
         return jsonify({'error': str(e)}), 500
 
 
-@event_bp.route('/event/<int:event_id>/detail', methods=['GET'])
 @jwt_required()
 def get_event_detail(event_id):
     try:
@@ -250,7 +242,6 @@ def get_event_detail(event_id):
         return jsonify({'error': str(e)}), 500
 
 
-@event_bp.route('/event/<int:event_id>/invite', methods=['POST'])
 @jwt_required()
 def invite_more_friends(event_id):
     try:

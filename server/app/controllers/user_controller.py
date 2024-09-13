@@ -1,13 +1,10 @@
-from flask import Blueprint, request, jsonify
+from flask import request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from app import db
 from app.models.user_model import User
 from app.models.event_model import EventInvite, Event
 
-user_bp = Blueprint('user_bp', __name__)
 
-
-@user_bp.route('/user/search', methods=['GET'])
 @jwt_required()
 def search_users():
     query = request.args.get('query', '')
@@ -31,7 +28,6 @@ def search_users():
     )
 
 
-@user_bp.route('/user/friends', methods=['GET'])
 @jwt_required()
 def get_friends():
     user_id = get_jwt_identity()
@@ -48,7 +44,6 @@ def get_friends():
     return jsonify(friends_list), 200
 
 
-@user_bp.route('/user/event-invites', methods=['GET'])
 @jwt_required()
 def get_event_invites():
     user_id = get_jwt_identity()
