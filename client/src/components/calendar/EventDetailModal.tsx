@@ -19,6 +19,7 @@ import { EventDetail } from '@/types/Event';
 import { User } from '@/types/User';
 import api from '@/utils/api';
 import InviteFriendsModal from './InviteFriendsModal';
+import { useEventForm } from '@/hooks/useEventForm';
 
 type EventDetailModalProps = {
   event: EventDetail;
@@ -38,18 +39,27 @@ export default function EventDetailModal({
   showAddFriendsButton,
 }: EventDetailModalProps) {
   const [isEditing, setIsEditing] = useState(false);
-  const [eventName, setEventName] = useState(event.event_name);
-  const [meetingTime, setMeetingTime] = useState('');
-  const [meetingPlace, setMeetingPlace] = useState('');
-  const [description, setDescription] = useState('');
-  const [participants, setParticipants] = useState(event.participants);
-  const [invitedFriends, setInvitedFriends] = useState<User[]>([]);
   const [createdBy, setCreatedBy] = useState(event.created_by);
-  const [error, setError] = useState<string | null>(null);
   const handleOpenInviteModal = () => setInviteModalOpen(true);
   const router = useRouter();
   const { user } = useFetchUser();
   const { friends } = useFriends();
+  const {
+    eventName,
+    setEventName,
+    meetingTime,
+    setMeetingTime,
+    meetingPlace,
+    setMeetingPlace,
+    description,
+    setDescription,
+    invitedFriends,
+    setInvitedFriends,
+    participants,
+    setParticipants,
+    error,
+    setError,
+  } = useEventForm(event);
 
   const startChat = () => {
     if (event.id) {
