@@ -405,7 +405,7 @@ export default function EventDetailModal({
           <div className="flex justify-center mt-4">
             <button
               type="button"
-              className="flex items-center p-2 border-none rounded bg-gray-400 text-xxs text-white h-6"
+              className="flex items-center p-2 border-none rounded font-bold bg-gray-300 text-xxs text-gray-700 h-6"
               onClick={onClose}
             >
               閉じる

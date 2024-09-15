@@ -198,7 +198,7 @@ export default function ChatPage({ params }: { params: { eventId: string } }) {
                     <div className="mr-1 text-xxs text-gray-500 relative top-1">
                       {formatTimeToJST(msg.timestamp)}
                     </div>
-                    <div className="bg-slate-500 rounded-xl mr-2 p-2">
+                    <div className="bg-slate-500 text-white rounded-xl mr-2 p-2">
                       {msg.message}
                     </div>
                   </div>
@@ -207,7 +207,7 @@ export default function ChatPage({ params }: { params: { eventId: string } }) {
                     <div className="mr-2 text-gray-700 font-bold">
                       {msg.user}
                     </div>
-                    <div className="bg-slate-500 rounded-xl mr-1 p-2">
+                    <div className="bg-slate-500 text-white rounded-xl mr-1 p-2">
                       {msg.message}
                     </div>
                     <div className="text-xxs text-gray-500 relative top-1">
