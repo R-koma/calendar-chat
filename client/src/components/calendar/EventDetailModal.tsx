@@ -24,6 +24,7 @@ import InviteFriendsModal from './InviteFriendsModal';
 type EventDetailModalProps = {
   event: EventDetail;
   onClose: () => void;
+  onDelete: (deletedEventId: number) => void;
   showChatButton: boolean;
   isInviteModalOpen: boolean;
   setInviteModalOpen: (isOpen: boolean) => void;
@@ -33,6 +34,7 @@ type EventDetailModalProps = {
 export default function EventDetailModal({
   event,
   onClose,
+  onDelete,
   showChatButton,
   isInviteModalOpen,
   setInviteModalOpen,
@@ -154,7 +156,7 @@ export default function EventDetailModal({
     }
   };
 
-  const handleDeleteEvent = async () => {
+  const handleDeleteEventDetail = async () => {
     try {
       const csrfToken = document.cookie
         .split('; ')
@@ -164,7 +166,9 @@ export default function EventDetailModal({
       await api.delete(`/event/${event.id}/delete`, {
         headers: { 'X-CSRF-TOKEN': csrfToken },
       });
-      window.location.reload();
+
+      onClose();
+      onDelete(event.id);
     } catch (err) {
       setError('イベントの削除に失敗しました');
     }
@@ -195,7 +199,7 @@ export default function EventDetailModal({
               <button
                 type="button"
                 className="flex items-center p-1 border-none rounded bg-red-500 text-xxs text-white h-6 ml-2"
-                onClick={handleDeleteEvent}
+                onClick={handleDeleteEventDetail}
               >
                 <DeleteIcon style={{ fontSize: '16px' }} />
               </button>

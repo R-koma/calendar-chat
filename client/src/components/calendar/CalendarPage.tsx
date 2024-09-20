@@ -116,6 +116,12 @@ export default function CalendarPage() {
     });
   }, [setFriends]);
 
+  const handleDeleteEvent = (deletedEventId: number) => {
+    setEvents((prevEvents) =>
+      prevEvents.filter((event) => event.id !== deletedEventId),
+    );
+  };
+
   if (!user) {
     return <div>Loading...</div>;
   }
@@ -166,6 +172,7 @@ export default function CalendarPage() {
         <EventDetailModal
           event={selectedEvent}
           onClose={closeEventDetailModal}
+          onDelete={handleDeleteEvent}
           showChatButton={showChatButton}
           isInviteModalOpen={isInviteModalOpen}
           setInviteModalOpen={setInviteModalOpen}
