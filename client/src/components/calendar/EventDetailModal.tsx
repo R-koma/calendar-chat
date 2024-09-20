@@ -14,12 +14,12 @@ import QueryBuilderIcon from '@mui/icons-material/QueryBuilder';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useFriends } from '@/contexts/FriendsContext';
+import { useEventForm } from '@/hooks/useEventForm';
 import useFetchUser from '@/hooks/useFetchUser';
 import { EventDetail } from '@/types/Event';
 import { User } from '@/types/User';
 import api from '@/utils/api';
 import InviteFriendsModal from './InviteFriendsModal';
-import { useEventForm } from '@/hooks/useEventForm';
 
 type EventDetailModalProps = {
   event: EventDetail;
