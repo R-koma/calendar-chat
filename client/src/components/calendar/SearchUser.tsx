@@ -22,6 +22,7 @@ export default function SearchUser({ closeSearchModal }: SearchUserProps) {
         params: { query },
       });
       setResults(response.data as User[]);
+      setQuery('');
       setError(null);
     } catch (err) {
       setError('検索に失敗しました');
