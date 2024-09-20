@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { User } from '@/types/User';
 import { EventDetail } from '@/types/Event';
+import { User } from '@/types/User';
 
 export function useEventForm(initialEvent: EventDetail | null = null) {
   const [eventName, setEventName] = useState(initialEvent?.event_name || '');

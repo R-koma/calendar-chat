@@ -75,6 +75,23 @@ docker-compose up --build
 初回は--buildオプションを付けてビルドします。
 コンテナが起動し、サーバーとクライアントが立ち上がります。
 
+4. データベースのマイグレーション
+
+Dockerコンテナ内でFlaskのマイグレーションコマンドを実行します。
+
+新しいターミナルウィンドウを開く
+
+マイグレーションコマンドを実行
+
+```bash
+cd server
+flask db init
+flask db migrate -m "Add Calendar Chat models"
+flask db upgrade
+```
+
+初回のみ flask db init が必要です。すでにマイグレーションが初期化されている場合は、このコマンドは不要です。
+
 ### 使用方法
 
 ブラウザを開き、http://localhost:3003にアクセスしてください。
