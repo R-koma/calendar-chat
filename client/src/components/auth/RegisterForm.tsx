@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { useAuth } from '../../hooks/useAuth';
+import Link from 'next/link';
 
 export default function RegisterForm() {
   const { register, error, setError } = useAuth();
@@ -85,6 +86,14 @@ export default function RegisterForm() {
             </button>
           </div>
         </form>
+        <div className="mt-4 text-center">
+          <Link
+            href="/auth/login"
+            className="text-blue-500 hover:text-blue-700"
+          >
+            ログインはこちら
+          </Link>
+        </div>
       </div>
     </div>
   );
