@@ -42,6 +42,7 @@ export default function EventDetailModal({
 }: EventDetailModalProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [createdBy, setCreatedBy] = useState(event.created_by);
+  const [eventData, setEventData] = useState(event);
   const handleOpenInviteModal = () => setInviteModalOpen(true);
   const router = useRouter();
   const { user } = useFetchUser();
@@ -61,7 +62,7 @@ export default function EventDetailModal({
     setParticipants,
     error,
     setError,
-  } = useEventForm(event);
+  } = useEventForm(eventData);
 
   const startChat = () => {
     if (event.id) {
@@ -77,6 +78,7 @@ export default function EventDetailModal({
         const response = await api.get<EventDetail>(
           `/event/${event.id}/detail`,
         );
+        setEventData(response.data);
 
         setParticipants(response.data.participants);
         setInvitedFriends(response.data.invited_friends || []);
@@ -131,7 +133,7 @@ export default function EventDetailModal({
       setMeetingPlace(event.meeting_place);
       setDescription(event.description);
     }
-  }, [isEditing, event]);
+  }, [isEditing, eventData]);
 
   const handleUpdateEvent = async () => {
     try {
@@ -154,6 +156,14 @@ export default function EventDetailModal({
     } catch (err) {
       setError('イベントの更新に失敗しました');
     }
+  };
+
+  const handleCancelEdit = () => {
+    setIsEditing(false);
+    setEventName(eventData.event_name);
+    setMeetingTime(eventData.meeting_time);
+    setMeetingPlace(eventData.meeting_place);
+    setDescription(eventData.description);
   };
 
   const handleDeleteEventDetail = async () => {
@@ -287,7 +297,7 @@ export default function EventDetailModal({
               </button>
               <button
                 type="button"
-                onClick={() => setIsEditing(false)}
+                onClick={handleCancelEdit}
                 className="flex items-center p-2 border-none rounded bg-gray-400 text-xxs text-white h-6"
               >
                 キャンセル
@@ -303,7 +313,7 @@ export default function EventDetailModal({
               />
               <div className="w-1/3 text-xxs font-bold">イベント名</div>
               <div className="w-1/3 text-xs text-gray-300">
-                {event.event_name}
+                {eventData.event_name}
               </div>
             </div>
             <div className="mb-2 flex items-center">
@@ -313,7 +323,7 @@ export default function EventDetailModal({
               />
               <div className="w-1/3 text-xxs font-bold">日付</div>
               <div className="w-1/3 text-xs text-gray-300">
-                {new Date(event.event_date).toLocaleDateString()}
+                {new Date(eventData.event_date).toLocaleDateString()}
               </div>
             </div>
             <div className="mb-2 flex items-center">
