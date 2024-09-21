@@ -1,5 +1,8 @@
 'use client';
 
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
 import ChatIcon from '@mui/icons-material/Chat';
 import CloseIcon from '@mui/icons-material/Close';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -20,6 +23,9 @@ import { EventDetail } from '@/types/Event';
 import { User } from '@/types/User';
 import api from '@/utils/api';
 import InviteFriendsModal from './InviteFriendsModal';
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 type EventDetailModalProps = {
   event: EventDetail;
@@ -323,7 +329,10 @@ export default function EventDetailModal({
               />
               <div className="w-1/3 text-xxs font-bold">日付</div>
               <div className="w-1/3 text-xs text-gray-300">
-                {new Date(eventData.event_date).toLocaleDateString()}
+                {dayjs
+                  .utc(eventData.event_date)
+                  .tz('Asia/Tokyo')
+                  .format('YYYY-MM-DD')}
               </div>
             </div>
             <div className="mb-2 flex items-center">
