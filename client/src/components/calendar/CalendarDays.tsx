@@ -1,5 +1,7 @@
 'use client';
 
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
 import { useEffect, useState } from 'react';
 import { CalendarEvent } from '@/types/Event';
 import api from '@/utils/api';
@@ -9,6 +11,8 @@ import {
   getPrevMonthEndDate,
   getWeekdays,
 } from '@/utils/dateUtils';
+
+dayjs.extend(utc);
 
 type DaysProps = {
   currentDate: Date;
@@ -60,9 +64,11 @@ export default function CalendarDays({
   }, [currentDate, setEvents]);
 
   const renderEvents = (date: Date) => {
-    const eventsForDate = events.filter(
-      (e) => new Date(e.event_date).getDate() === date.getDate(),
-    );
+    const eventsForDate = events.filter((e) => {
+      const eventDate = dayjs(e.event_date).utc();
+      const currentDateDayjs = dayjs(date).utc();
+      return eventDate.isSame(currentDateDayjs, 'day');
+    });
 
     return eventsForDate.length > 0 ? (
       <div className="h-full pl-2 overflow-y-auto overflow-x-hidden relative">
@@ -72,7 +78,7 @@ export default function CalendarDays({
               key={event.id}
               type="button"
               className="w-full text-gray-800 text-xxxs text-left mb-2 pl-1 p-0.1 
-              bg-blue-400 rounded-sm whitespace-nowrap block overflow-hidden text-ellipsis"
+            bg-blue-400 rounded-sm whitespace-nowrap block overflow-hidden text-ellipsis"
               style={{ maxWidth: '100px' }}
               onClick={(e) => {
                 e.stopPropagation();
