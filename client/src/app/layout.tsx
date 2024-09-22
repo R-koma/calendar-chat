@@ -1,6 +1,6 @@
 import CssBaseline from '@mui/material/CssBaseline';
 import { Inter } from 'next/font/google';
-import { FriendsProvider } from '@/contexts/FriendsContext';
+import Providers from '@/components/Providers';
 import type { Metadata } from 'next';
 import './globals.css';
 
@@ -20,7 +20,7 @@ export default function RootLayout({
     <html lang="ja">
       <body className={inter.className}>
         <CssBaseline>
-          <FriendsProvider>{children}</FriendsProvider>
+          <Providers>{children}</Providers>
         </CssBaseline>
       </body>
     </html>
