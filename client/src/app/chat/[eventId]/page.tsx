@@ -9,12 +9,18 @@ import PushPinIcon from '@mui/icons-material/PushPin';
 import QueryBuilderIcon from '@mui/icons-material/QueryBuilder';
 import SendIcon from '@mui/icons-material/Send';
 import axios from 'axios';
+import dayjs from 'dayjs';
+import timezone from 'dayjs/plugin/timezone';
+import utc from 'dayjs/plugin/utc';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState, FormEvent, useRef } from 'react';
 import io from 'socket.io-client';
 import useFetchUser from '@/hooks/useFetchUser';
 import { EventDetail, Message } from '@/types/Event';
 import api from '@/utils/api';
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 const socket = io(process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001', {
   withCredentials: true,
@@ -123,7 +129,6 @@ export default function ChatPage({ params }: { params: { eventId: string } }) {
     }
   }, [eventDetail]);
 
-  // ローディング状態の表示
   if (loading || !eventDetail) {
     return <div>Loading...</div>;
   }
@@ -163,7 +168,10 @@ export default function ChatPage({ params }: { params: { eventId: string } }) {
             style={{ width: '22px', height: '22px' }}
           />
           <div className="text-xs flex-grow">
-            {new Date(eventDetail.event_date).toLocaleDateString()}
+            {dayjs
+              .utc(eventDetail.event_date)
+              .tz('Asia/Tokyo')
+              .format('YYYY-MM-DD')}
           </div>
         </div>
         <div className="mb-4 flex items-start">
