@@ -132,7 +132,6 @@ export default function CalendarEventCreateForm({
                 value={meetingTime}
                 onChange={(e) => setMeetingTime(e.target.value)}
               >
-                <option value="" />
                 <option value="未定">未定</option>
                 <option value="00:00">0:00</option>
                 <option value="01:00">1:00</option>

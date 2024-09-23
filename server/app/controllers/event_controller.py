@@ -185,9 +185,21 @@ def respond_to_event():
 @jwt_required()
 def get_event_detail(event_id):
     try:
+        user_id = get_jwt_identity()
         event = Event.query.get(event_id)
         if not event:
             return jsonify({'error': 'Event not found'}), 404
+
+        participant = EventParticipant.query.filter_by(
+            event_id=event_id, user_id=user_id
+        ).first()
+
+        invite = EventInvite.query.filter_by(
+            event_id=event_id, user_id=user_id, status='pending'
+        ).first()
+
+        if not participant and not invite:
+            return jsonify({'error': 'このイベントにアクセスする権限がありません'}), 403
 
         participants = (
             db.session.query(User)

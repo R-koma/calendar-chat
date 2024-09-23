@@ -14,6 +14,7 @@ const useFetchUser = () => {
     email: string;
   } | null>(null);
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState<boolean>(true);
 
   const fetchUser = async (): Promise<void> => {
     try {
@@ -21,26 +22,21 @@ const useFetchUser = () => {
       setUser(response.data);
     } catch (err) {
       setError('ユーザー情報の取得に失敗しました。');
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    const loadUser = async () => {
-      try {
-        await fetchUser();
-      } catch (err) {
-        setError('Failed to load user.');
-      }
-    };
-
-    loadUser().catch(() => {
-      setError('Failed to load user.');
+    fetchUser().catch(() => {
+      setError('Failed to load user');
     });
   }, []);
 
   return {
     user,
     error,
+    loading,
   };
 };
 

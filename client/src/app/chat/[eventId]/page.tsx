@@ -8,6 +8,7 @@ import PersonIcon from '@mui/icons-material/Person';
 import PushPinIcon from '@mui/icons-material/PushPin';
 import QueryBuilderIcon from '@mui/icons-material/QueryBuilder';
 import SendIcon from '@mui/icons-material/Send';
+import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState, FormEvent, useRef } from 'react';
 import io from 'socket.io-client';
@@ -26,7 +27,7 @@ export default function ChatPage({ params }: { params: { eventId: string } }) {
   const [message, setMessage] = useState('');
   const [error, setError] = useState<string | null>(null);
   const hasJoinedRoom = useRef(false);
-  const { user } = useFetchUser();
+  const { user, loading } = useFetchUser();
   const currentUser = user?.username;
   const router = useRouter();
 
@@ -60,6 +61,15 @@ export default function ChatPage({ params }: { params: { eventId: string } }) {
   };
 
   useEffect(() => {
+    if (loading) {
+      return;
+    }
+
+    if (!user) {
+      setError('ログインが必要です');
+      router.push('/auth/login');
+      return;
+    }
     const fetchEventDetails = async () => {
       try {
         if (eventId) {
@@ -71,24 +81,26 @@ export default function ChatPage({ params }: { params: { eventId: string } }) {
             setMessages(response.data.messages);
           }
         }
-      } catch (err) {
-        setError('イベント詳細の取得に失敗しました');
+      } catch (err: unknown) {
+        if (axios.isAxiosError(err)) {
+          if (
+            err.response &&
+            (err.response.status === 401 || err.response.status === 403)
+          ) {
+            setError('このイベントにアクセスする権限がありません');
+            router.push('/auth/login');
+          } else {
+            setError('イベント詳細の取得に失敗しました');
+          }
+        } else {
+          setError('イベント詳細の取得に失敗しました');
+        }
       }
     };
 
     fetchEventDetails().catch(() => {
       setError('イベント詳細の取得に失敗しました');
     });
-
-    if (eventId && !hasJoinedRoom.current) {
-      socket.off('receive_message');
-      socket.emit('join_event_chat', { event_id: eventId });
-      hasJoinedRoom.current = true;
-
-      socket.on('receive_message', (data: Message) => {
-        setMessages((prevMessages) => [...prevMessages, data]);
-      });
-    }
 
     return () => {
       if (hasJoinedRoom.current) {
@@ -97,7 +109,24 @@ export default function ChatPage({ params }: { params: { eventId: string } }) {
         hasJoinedRoom.current = false;
       }
     };
-  }, [eventId]);
+  }, [eventId, user, loading, router]);
+
+  useEffect(() => {
+    if (eventDetail && !hasJoinedRoom.current) {
+      socket.off('receive_message');
+      socket.emit('join_event_chat', { event_id: eventId });
+      hasJoinedRoom.current = true;
+
+      socket.on('receive_message', (data: Message) => {
+        setMessages((prevMessages) => [...prevMessages, data]);
+      });
+    }
+  }, [eventDetail]);
+
+  // ローディング状態の表示
+  if (loading || !eventDetail) {
+    return <div>Loading...</div>;
+  }
 
   const handleSendMessage = (e: FormEvent) => {
     e.preventDefault();
@@ -230,6 +259,7 @@ export default function ChatPage({ params }: { params: { eventId: string } }) {
           <button
             type="submit"
             className="ml-2 bg-blue-500 text-white rounded p-2"
+            aria-label="送信"
           >
             <SendIcon />
           </button>
