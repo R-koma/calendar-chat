@@ -1,8 +1,5 @@
 'use client';
 
-import dayjs from 'dayjs';
-import utc from 'dayjs/plugin/utc';
-import timezone from 'dayjs/plugin/timezone';
 import ChatIcon from '@mui/icons-material/Chat';
 import CloseIcon from '@mui/icons-material/Close';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -14,6 +11,9 @@ import PersonIcon from '@mui/icons-material/Person';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import PushPinIcon from '@mui/icons-material/PushPin';
 import QueryBuilderIcon from '@mui/icons-material/QueryBuilder';
+import dayjs from 'dayjs';
+import timezone from 'dayjs/plugin/timezone';
+import utc from 'dayjs/plugin/utc';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useFriends } from '@/contexts/FriendsContext';
@@ -208,6 +208,7 @@ export default function EventDetailModal({
                   type="button"
                   className="flex items-center p-1 border-none rounded bg-gray-400 text-xxs text-white h-6"
                   onClick={() => setIsEditing(true)}
+                  aria-label="編集"
                 >
                   <EditIcon style={{ fontSize: '16px' }} />
                 </button>
@@ -216,6 +217,7 @@ export default function EventDetailModal({
                 type="button"
                 className="flex items-center p-1 border-none rounded bg-red-500 text-xxs text-white h-6 ml-2"
                 onClick={handleDeleteEventDetail}
+                aria-label="削除"
               >
                 <DeleteIcon style={{ fontSize: '16px' }} />
               </button>
@@ -243,7 +245,6 @@ export default function EventDetailModal({
                   value={meetingTime}
                   onChange={(e) => setMeetingTime(e.target.value)}
                 >
-                  <option value="" />
                   <option value="未定">未定</option>
                   <option value="00:00">0:00</option>
                   <option value="01:00">1:00</option>

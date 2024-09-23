@@ -1,14 +1,7 @@
 'use client';
 
-import React, {
-  createContext,
-  useState,
-  useEffect,
-  useContext,
-  useMemo,
-} from 'react';
+import React, { createContext, useState, useContext, useMemo } from 'react';
 import { User } from '@/types/User';
-import api from '@/utils/api';
 
 type AuthContextType = {
   user: User | null;

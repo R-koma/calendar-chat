@@ -6,11 +6,9 @@ import { FriendsProvider } from '@/contexts/FriendsContext';
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  // const isAuthPage = ['/login', '/register'].includes(pathname);
   const isAuthPage = pathname.startsWith('/auth');
 
   if (isAuthPage) {
-    // ログインページや新規登録ページでは、プロバイダーを適用しない
     return children;
   }
 
