@@ -191,8 +191,8 @@ export default function EventDetailModal({
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-      <div className="bg-gray-800 p-6 rounded shadow-lg w-96 relative">
+    <div className="w-full fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+      <div className="w-3/4 bg-gray-800 p-6 rounded shadow-lg relative">
         <CloseIcon
           className="absolute top-2 right-2 cursor-pointer"
           onClick={onClose}
@@ -312,7 +312,7 @@ export default function EventDetailModal({
             </div>
           </div>
         ) : (
-          <div>
+          <div className="w-full">
             <div className="mb-2 flex items-center">
               <PushPinIcon
                 className="w-1/3 mr-4"
@@ -366,19 +366,17 @@ export default function EventDetailModal({
                 style={{ width: '16px', height: '16px' }}
               />
               <div className="w-1/3 text-xxs font-bold">参加者</div>
-              <ul className="w-1/3 flex items-center text-xs text-gray-300">
+              <ul className="w-1/3 grid grid-cols-3 gap-1 text-xs text-gray-300">
                 {participants.length > 0 ? (
                   participants.map((participant) => (
-                    <li className="mr-2" key={participant.id}>
-                      {participant.username}
-                    </li>
+                    <li key={participant.id}>{participant.username}</li>
                   ))
                 ) : (
                   <li>参加者がいません</li>
                 )}
                 {showAddFriendsButton && (
                   <PersonAddIcon
-                    className="w-1/3 flex items-center text-blue-500 text-xxs font-bold cursor-pointer"
+                    className="text-blue-500 cursor-pointer"
                     style={{ width: '16px', height: '16px' }}
                     onClick={handleOpenInviteModal}
                   />

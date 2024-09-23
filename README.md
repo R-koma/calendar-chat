@@ -94,4 +94,4 @@ flask db upgrade
 
 ### 使用方法
 
-ブラウザを開き、http://localhost:3003にアクセスしてください。
+ブラウザを開き、http://localhost:3003 にアクセスしてください。
