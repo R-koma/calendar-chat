@@ -11,8 +11,8 @@ describe('LogoutButton', () => {
     const logoutMock = jest.fn();
     (useAuth as jest.Mock).mockReturnValue({ logout: logoutMock });
 
-    const { getByText } = render(<LogoutButton />);
-    const button = getByText('Logout');
+    const { getByRole } = render(<LogoutButton />);
+    const button = getByRole('button', { name: /logout/i });
 
     const user = userEvent.setup();
     await user.click(button);
