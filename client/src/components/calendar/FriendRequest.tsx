@@ -59,21 +59,21 @@ export default function FriendRequests({ addFriend }: FriendRequestsProps) {
         {requests.map((req) => (
           <li
             key={req.id}
-            className="flex justify-between items-center text-xs px-4 py-1 border border-gray-200 rounded shadow-sm"
+            className="flex justify-between items-center text-xs px-4 py-1 hover:bg-gray-600 rounded"
           >
             <span>{req.sender_username}</span>
             <div className="space-x-2">
               <button
                 type="button"
                 onClick={() => handleRespond(req.id, 'accept')}
-                className="bg-green-600 text-white text-xxs py-1 px-3 rounded-lg hover:bg-green-500 focus:outline-none"
+                className="bg-green-600 text-white text-xxs py-0.5 px-3 rounded-lg hover:bg-green-500 focus:outline-none"
               >
                 承認
               </button>
               <button
                 type="button"
                 onClick={() => handleRespond(req.id, 'reject')}
-                className="bg-red-600 text-white text-xxs py-1 px-3 rounded-lg hover:bg-red-500 focus:outline-none"
+                className="bg-red-600 text-white text-xxs py-0.5 px-3 rounded-lg hover:bg-red-500 focus:outline-none"
               >
                 拒否
               </button>

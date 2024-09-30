@@ -127,7 +127,7 @@ export default function CalendarPage() {
   }
 
   return (
-    <div className="calendar-container bg-white  shadow rounded-lg overflow-hidden relative">
+    <div className="calendar-container bg-white shadow overflow-hidden relative">
       <CalendarHeader
         user={user}
         currentDate={currentDate}

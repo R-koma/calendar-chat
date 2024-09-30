@@ -318,8 +318,8 @@ export default function EventDetailModal({
                 className="w-1/3 mr-4"
                 style={{ width: '16px', height: '16px' }}
               />
-              <div className="w-1/3 text-xxs font-bold">イベント名</div>
-              <div className="w-1/3 text-xs text-gray-300">
+              <div className="w-1/3 text-xs font-bold">イベント名</div>
+              <div className="w-1/3 text-xs text-gray-300 font-bold">
                 {eventData.event_name}
               </div>
             </div>
@@ -328,8 +328,8 @@ export default function EventDetailModal({
                 className="w-1/3 mr-4"
                 style={{ width: '16px', height: '16px' }}
               />
-              <div className="w-1/3 text-xxs font-bold">日付</div>
-              <div className="w-1/3 text-xs text-gray-300">
+              <div className="w-1/3 text-xs font-bold">日付</div>
+              <div className="w-1/3 text-xs text-gray-300 font-bold">
                 {dayjs
                   .utc(eventData.event_date)
                   .tz('Asia/Tokyo')
@@ -341,7 +341,7 @@ export default function EventDetailModal({
                 className="w-1/3 mr-4"
                 style={{ width: '16px', height: '16px' }}
               />
-              <div className="w-1/3 text-xxs font-bold">時間</div>
+              <div className="w-1/3 text-xs font-bold">時間</div>
               <div className="w-1/3 text-xs text-gray-300">{meetingTime}</div>
             </div>
             <div className="mb-2 flex items-center">
@@ -349,15 +349,17 @@ export default function EventDetailModal({
                 className="w-1/3 mr-4"
                 style={{ width: '16px', height: '16px' }}
               />
-              <div className="w-1/3 text-xxs font-bold">場所</div>
-              <div className="w-1/3 text-xs text-gray-300">{meetingPlace}</div>
+              <div className="w-1/3 text-xs font-bold">場所</div>
+              <div className="w-1/3 text-xs text-gray-300 font-bold">
+                {meetingPlace}
+              </div>
             </div>
             <div className="mb-2 flex items-center">
               <DescriptionIcon
                 className="w-1/3 mr-4"
                 style={{ width: '16px', height: '16px' }}
               />
-              <div className="w-1/3 text-xxs font-bold">説明</div>
+              <div className="w-1/3 text-xs font-bold">説明</div>
               <div className="w-1/3 text-xs text-gray-300">{description}</div>
             </div>
             <div className="mb-2 flex items-center">
@@ -365,14 +367,16 @@ export default function EventDetailModal({
                 className="w-1/3 mr-4"
                 style={{ width: '16px', height: '16px' }}
               />
-              <div className="w-1/3 text-xxs font-bold">参加者</div>
+              <div className="w-1/3 text-xs font-bold">参加者</div>
               <ul className="w-1/3 grid grid-cols-3 gap-1 text-xs text-gray-300">
                 {participants.length > 0 ? (
                   participants.map((participant) => (
-                    <li key={participant.id}>{participant.username}</li>
+                    <li key={participant.id} className="font-bold">
+                      {participant.username}
+                    </li>
                   ))
                 ) : (
-                  <li>参加者がいません</li>
+                  <li className="font-bold">参加者がいません</li>
                 )}
                 {showAddFriendsButton && (
                   <PersonAddIcon
@@ -388,7 +392,7 @@ export default function EventDetailModal({
                 className="w-1/3 mr-4"
                 style={{ width: '16px', height: '16px' }}
               />
-              <div className="w-1/3 text-xxs font-bold">招待リスト</div>
+              <div className="w-1/3 text-xs font-bold">招待リスト</div>
               <ul className="w-1/3 flex text-xs text-gray-300">
                 {invitedFriends.length > 0 ? (
                   invitedFriends.map((friend) => (
@@ -397,7 +401,7 @@ export default function EventDetailModal({
                     </li>
                   ))
                 ) : (
-                  <li>招待者はいません。</li>
+                  <li className="font-bold">招待者はいません。</li>
                 )}
               </ul>
             </div>
