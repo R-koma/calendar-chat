@@ -127,7 +127,7 @@ export default function CalendarMenu({
         className="flex items-center my-2 ml-1 p-1 text-xxs bg-gray-700 border rounded-full"
         onClick={openModal}
       >
-        <AddIcon className="icon-extra-small" />
+        <AddIcon fontSize="small" />
         イベント作成
       </button>
       <div className="p-2">
@@ -170,7 +170,7 @@ export default function CalendarMenu({
         </div>
       </div>
       {error && <p className="text-red-500">{error}</p>}
-      <div className="p-2">
+      <div>
         <div
           className="flex items-center px-2 pt-2 cursor-pointer"
           onClick={toggleFriendList}
@@ -182,17 +182,15 @@ export default function CalendarMenu({
           role="button"
           tabIndex={0}
         >
-          <div className="text-xxs mr-2">友達リスト</div>
+          <div className="text-xxs mr-2 font-bold">友達リスト</div>
           {friendListOpen ? (
             <ArrowDropUpIcon
               onClick={toggleFriendList}
-              fontSize="small"
               className="cursor-pointer"
             />
           ) : (
             <ArrowDropDownIcon
               onClick={toggleFriendList}
-              fontSize="small"
               className="cursor-pointer"
             />
           )}
@@ -239,7 +237,7 @@ export default function CalendarMenu({
         <AddIcon fontSize="small" />
         <div className="text-xxs">友達を追加</div>
       </div>
-      <div className="p-2">
+      <div>
         <div
           className="flex items-center px-2 pt-2  mb-2 cursor-pointer"
           onClick={toggleFriendRequest}
@@ -251,17 +249,15 @@ export default function CalendarMenu({
           role="button"
           tabIndex={0}
         >
-          <div className="text-xxs mr-2">フレンドリクエスト</div>
+          <div className="text-xxs mr-2 font-bold">友達リクエスト</div>
           {friendRequestOpen ? (
             <ArrowDropUpIcon
               onClick={toggleFriendRequest}
-              fontSize="small"
               className="cursor-pointer"
             />
           ) : (
             <ArrowDropDownIcon
               onClick={toggleFriendRequest}
-              fontSize="small"
               className="cursor-pointer"
             />
           )}

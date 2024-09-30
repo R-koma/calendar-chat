@@ -12,15 +12,25 @@ type SearchUserProps = {
 export default function SearchUser({ closeSearchModal }: SearchUserProps) {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<User[]>([]);
+  const [noResults, setNoResults] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleSearch = async () => {
+  const handleSearch = async (e: React.FormEvent) => {
+    e.preventDefault();
     if (query.trim() === '') return;
 
     try {
       const response = await api.get('/user/search', {
         params: { query },
       });
+      const data = response.data as User[];
+
+      if (data.length === 0) {
+        setNoResults(true);
+      } else {
+        setNoResults(false);
+      }
+
       setResults(response.data as User[]);
       setQuery('');
       setError(null);
@@ -56,7 +66,7 @@ export default function SearchUser({ closeSearchModal }: SearchUserProps) {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center space-x-2">
+      <form onSubmit={handleSearch} className="flex items-center space-x-2">
         <input
           className="w-full p-1 text-sm text-gray-700 border border-gray-300  rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
           type="text"
@@ -65,14 +75,16 @@ export default function SearchUser({ closeSearchModal }: SearchUserProps) {
           onChange={(e) => setQuery(e.target.value)}
         />
         <button
-          type="button"
+          type="submit"
           className=" bg-blue-600 text-sm p-1 px-2 w-1/4  text-white  rounded hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-400"
-          onClick={handleSearch}
         >
           検索
         </button>
-      </div>
+      </form>
       {error && <p className="text-red-500">{error}</p>}
+      {noResults && !error && (
+        <p className="text-red-500">ユーザーが存在しません。</p>
+      )}
       <ul className="space-y-2">
         {results.map((user) => (
           <li key={user.id} className="px-4 py-2  cursor-pointer">

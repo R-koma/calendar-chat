@@ -1,8 +1,8 @@
 'use client';
 
+import Link from 'next/link';
 import React, { useState } from 'react';
 import { useAuth } from '../../hooks/useAuth';
-import Link from 'next/link';
 
 export default function RegisterForm() {
   const { register, error, setError } = useAuth();
