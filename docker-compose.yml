@@ -19,8 +19,27 @@ services:
       - FLASK_APP=app/main.py
       - FLASK_ENV=development
       - PYTHONPATH=/app
+      - DATABASE_URL=postgresql+psycopg2://username:password@db:5432/dbname
+      - SECRET_KEY=your-secret-key
+      - JWT_SECRET_KEY=your-jwt-secret-key
     env_file:
       - ./server/.env
     volumes:
       - ./server:/app
-    command: python app/main.py
+    depends_on:
+      - db
+    command: gunicorn -k geventwebsocket.gunicorn.workers.GeventWebSocketWorker -w 1 -b 0.0.0.0:5001 app.main:app
+
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: username
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: dbname
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    ports:
+      - 5432:5432
+
+volumes:
+  postgres_data:

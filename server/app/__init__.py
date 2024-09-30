@@ -13,7 +13,7 @@ from .config import Config
 db = SQLAlchemy()
 migrate = Migrate()
 jwt = JWTManager()
-socketio = SocketIO(cors_allowed_origins="http://localhost:3003")
+socketio = SocketIO(cors_allowed_origins="http://localhost:3003", async_mode='gevent')
 # csrf = CSRFProtect()
 
 
