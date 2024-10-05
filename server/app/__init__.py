@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager
@@ -19,6 +19,11 @@ socketio = SocketIO(cors_allowed_origins="http://localhost:3003", async_mode='ge
 
 def create_app():
     app = Flask(__name__)
+
+    @app.route('/healthcheck', methods=['GET'])
+    def healthcheck():
+        return jsonify({'status': 'OK'}), 200
+
     load_dotenv()
     app.config.from_object(Config)
 
