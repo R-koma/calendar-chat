@@ -301,17 +301,17 @@ def handle_join_event_chat(data):
         logger.info(f"User {user_id} successfully joined the chat for event {event_id}")
         join_room(str(event_id))
 
-        current_timestamp = datetime.now(ZoneInfo('UTC')).isoformat()
+        # current_timestamp = datetime.now(ZoneInfo('UTC')).isoformat()
 
-        emit(
-            'receive_message',
-            {
-                'message': f'{participant.user.username}が参加。',
-                'user': participant.user.username,
-                'timestamp': current_timestamp,
-            },
-            room=str(event_id),
-        )
+        # emit(
+        #     'receive_message',
+        #     {
+        #         'message': f'{participant.user.username}が参加。',
+        #         'user': participant.user.username,
+        #         'timestamp': current_timestamp,
+        #     },
+        #     room=str(event_id),
+        # )
         logger.info(f"Emitting join message for event {event_id} and user {user_id}")
     else:
         logger.warning(
@@ -381,8 +381,3 @@ def handle_leave_room(data):
 
     leave_room(str(event_id))
     logger.info(f"User {user_id} has left the chat for event {event_id}")
-    emit(
-        'receive_message',
-        {'message': f'{User.query.get(user_id).username} has left the chat.'},
-        room=str(event_id),
-    )

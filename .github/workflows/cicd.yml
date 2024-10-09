@@ -1,0 +1,134 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/**"
+      - "server/**"
+      - "client/**"
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_REGION: ap-northeast-1
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    env:
+      ECR_REPOSITORY_SERVER: calendar-chat-server
+      ECR_REPOSITORY_CLIENT: calendar-chat-client
+
+    steps:
+      - name: コードをチェックアウト
+        uses: actions/checkout@v3
+
+      - name: Docker Buildxをセットアップ
+        uses: docker/setup-buildx-action@v2
+
+      - name: AWS認証情報の設定
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{ env.AWS_REGION }}
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+
+      - name: Amazon ECRへのログイン
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Dockerイメージのビルドとプッシュ
+        run: |
+          docker compose -f docker-compose.prod.yml build
+          IMAGE_TAG=${GITHUB_SHA}
+          AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+          ECR_REGISTRY=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
+          docker tag server:latest $ECR_REGISTRY/$ECR_REPOSITORY_SERVER:${IMAGE_TAG}
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY_SERVER:${IMAGE_TAG}
+          docker tag client:latest $ECR_REGISTRY/$ECR_REPOSITORY_CLIENT:${IMAGE_TAG}
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY_CLIENT:${IMAGE_TAG}
+          echo "SERVER_IMAGE_URI=$ECR_REGISTRY/$ECR_REPOSITORY_SERVER:${IMAGE_TAG}" >> image-uris.txt
+          echo "CLIENT_IMAGE_URI=$ECR_REGISTRY/$ECR_REPOSITORY_CLIENT:${IMAGE_TAG}" >> image-uris.txt
+
+      - name: イメージURIをアーティファクトとしてアップロード
+        uses: actions/upload-artifact@v3
+        with:
+          name: image-uris
+          path: image-uris.txt
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build-test
+    env:
+      AWS_REGION: ap-northeast-1
+      ECS_CLUSTER: calendar-chat-cluster
+      ECS_TASK_DEFINITION_SERVER: .aws/task-def-server.json
+      ECS_TASK_DEFINITION_CLIENT: .aws/task-def-client.json
+      ECS_SERVICE_NAME_SERVER: calendar-chat-server-service
+      ECS_SERVICE_NAME_CLIENT: calendar-chat-client-service
+
+    steps:
+      - name: コードをチェックアウト
+        uses: actions/checkout@v3
+
+      - name: AWS認証情報の設定
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{ env.AWS_REGION }}
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+
+      - name: アーティファクトをダウンロード
+        uses: actions/download-artifact@v3
+        with:
+          name: image-uris
+          path: artifacts
+
+      - name: イメージURIを環境変数に設定
+        run: |
+          source artifacts/image-uris.txt
+          echo "SERVER_IMAGE_URI=$SERVER_IMAGE_URI" >> $GITHUB_ENV
+          echo "CLIENT_IMAGE_URI=$CLIENT_IMAGE_URI" >> $GITHUB_ENV
+
+      - name: サーバーのECSタスク定義をレンダリング
+        id: render-server-task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: ${{ env.ECS_TASK_DEFINITION_SERVER }}
+          container-name: server
+          image: ${{ env.SERVER_IMAGE_URI }}
+          environment-variables: |
+            EXECUTION_ROLE_ARN=${{ secrets.EXECUTION_ROLE_ARN }}
+            TASK_ROLE_ARN=${{ secrets.ECS_TASK_ROLE_ARN }}
+            SECRET_KEY_ARN=${{ secrets.SECRET_KEY_ARN }}
+            DATABASE_URL_ARN=${{ secrets.DATABASE_URL_ARN }}
+            JWT_SECRET_KEY_ARN=${{ secrets.JWT_SECRET_KEY_ARN }}
+
+      - name: サーバーをECSにデプロイ
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition: ${{ steps.render-server-task-def.outputs.task-definition }}
+          service: ${{ env.ECS_SERVICE_NAME_SERVER }}
+          cluster: ${{ env.ECS_CLUSTER }}
+          wait-for-service-stability: true
+
+      - name: クライアントのECSタスク定義をレンダリング
+        id: render-client-task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: ${{ env.ECS_TASK_DEFINITION_CLIENT }}
+          container-name: client
+          image: ${{ env.CLIENT_IMAGE_URI }}
+          environment-variables: |
+            EXECUTION_ROLE_ARN=${{ secrets.EXECUTION_ROLE_ARN }}
+            TASK_ROLE_ARN=${{ secrets.ECS_TASK_ROLE_ARN }}
+            NEXT_PUBLIC_API_URL_ARN=${{ secrets.NEXT_PUBLIC_API_URL_ARN }}
+
+      - name: クライアントをECSにデプロイ
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition: ${{ steps.render-client-task-def.outputs.task-definition }}
+          service: ${{ env.ECS_SERVICE_NAME_CLIENT }}
+          cluster: ${{ env.ECS_CLUSTER }}
+          wait-for-service-stability: true
