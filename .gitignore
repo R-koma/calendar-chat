@@ -1,1 +1,4 @@
 .aws
+.aws/task-def-server.json
+.aws/task-def-client.json
+
