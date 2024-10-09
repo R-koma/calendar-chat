@@ -92,44 +92,32 @@ jobs:
           echo "SERVER_IMAGE_URI=$SERVER_IMAGE_URI" >> $GITHUB_ENV
           echo "CLIENT_IMAGE_URI=$CLIENT_IMAGE_URI" >> $GITHUB_ENV
 
-      - name: サーバーのECSタスク定義をレンダリング
-        id: render-server-task-def
-        uses: aws-actions/amazon-ecs-render-task-definition@v1
-        with:
-          task-definition: ${{ env.ECS_TASK_DEFINITION_SERVER }}
-          container-name: server
-          image: ${{ env.SERVER_IMAGE_URI }}
-          environment-variables: |
-            EXECUTION_ROLE_ARN=${{ secrets.EXECUTION_ROLE_ARN }}
-            TASK_ROLE_ARN=${{ secrets.ECS_TASK_ROLE_ARN }}
-            SECRET_KEY_ARN=${{ secrets.SECRET_KEY_ARN }}
-            DATABASE_URL_ARN=${{ secrets.DATABASE_URL_ARN }}
-            JWT_SECRET_KEY_ARN=${{ secrets.JWT_SECRET_KEY_ARN }}
+      - name: 環境変数を設定
+        run: |
+          echo "SECRET_KEY_ARN=${{ secrets.SECRET_KEY_ARN }}" >> $GITHUB_ENV
+          echo "DATABASE_URL_ARN=${{ secrets.DATABASE_URL_ARN }}" >> $GITHUB_ENV
+          echo "JWT_SECRET_KEY_ARN=${{ secrets.JWT_SECRET_KEY_ARN }}" >> $GITHUB_ENV
+
+      - name: タスク定義ファイルを環境変数で置換
+        run: |
+          envsubst < ${{ env.ECS_TASK_DEFINITION_SERVER }} > rendered-task-def-server.json
 
       - name: サーバーをECSにデプロイ
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
-          task-definition: ${{ steps.render-server-task-def.outputs.task-definition }}
+          task-definition: rendered-task-def-server.json
           service: ${{ env.ECS_SERVICE_NAME_SERVER }}
           cluster: ${{ env.ECS_CLUSTER }}
           wait-for-service-stability: true
 
       - name: クライアントのECSタスク定義をレンダリング
-        id: render-client-task-def
-        uses: aws-actions/amazon-ecs-render-task-definition@v1
-        with:
-          task-definition: ${{ env.ECS_TASK_DEFINITION_CLIENT }}
-          container-name: client
-          image: ${{ env.CLIENT_IMAGE_URI }}
-          environment-variables: |
-            EXECUTION_ROLE_ARN=${{ secrets.EXECUTION_ROLE_ARN }}
-            TASK_ROLE_ARN=${{ secrets.ECS_TASK_ROLE_ARN }}
-            NEXT_PUBLIC_API_URL_ARN=${{ secrets.NEXT_PUBLIC_API_URL_ARN }}
+        run: |
+          envsubst < ${{ env.ECS_TASK_DEFINITION_CLIENT }} > rendered-task-def-client.json
 
       - name: クライアントをECSにデプロイ
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
-          task-definition: ${{ steps.render-client-task-def.outputs.task-definition }}
+          task-definition: rendered-task-def-client.json
           service: ${{ env.ECS_SERVICE_NAME_CLIENT }}
           cluster: ${{ env.ECS_CLUSTER }}
           wait-for-service-stability: true
