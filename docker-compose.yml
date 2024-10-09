@@ -2,9 +2,9 @@ services:
   client:
     build: ./client
     ports:
-      - 3003:3003
+      - 80:80
     environment:
-      - PORT=3003
+      - PORT=80
       - NODE_ENV=development
     env_file:
       - ./client/.env
