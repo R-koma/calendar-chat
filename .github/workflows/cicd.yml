@@ -2,6 +2,8 @@ name: CI/CD Pipeline
 
 on:
   push:
+    branches:
+      - main
     paths:
       - ".github/workflows/**"
       - "server/**"
@@ -64,9 +66,8 @@ jobs:
       ECS_CLUSTER: calendar-chat-cluster
       ECS_TASK_DEFINITION_SERVER: .aws/task-def-server.json
       ECS_TASK_DEFINITION_CLIENT: .aws/task-def-client.json
-      # まだ作成していない
-      ECS_SERVICE_NAME_SERVER: calendar-chat-server
-      ECS_SERVICE_NAME_CLIENT: calendar-chat-client
+      ECS_SERVICE_NAME_SERVER: calendar-chat-server-service
+      ECS_SERVICE_NAME_CLIENT: calendar-chat-client-service
 
     steps:
       - name: コードをチェックアウト
