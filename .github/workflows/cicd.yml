@@ -97,6 +97,7 @@ jobs:
           echo "SECRET_KEY_ARN=${{ secrets.SECRET_KEY_ARN }}" >> $GITHUB_ENV
           echo "DATABASE_URL_ARN=${{ secrets.DATABASE_URL_ARN }}" >> $GITHUB_ENV
           echo "JWT_SECRET_KEY_ARN=${{ secrets.JWT_SECRET_KEY_ARN }}" >> $GITHUB_ENV
+          echo "NEXT_PUBLIC_API_URL_ARN=${{ secrets.NEXT_PUBLIC_API_URL_ARN }}" >> $GITHUB_ENV
 
       - name: タスク定義ファイルを環境変数で置換
         run: |
