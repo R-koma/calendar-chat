@@ -13,7 +13,7 @@ from .config import Config
 db = SQLAlchemy()
 migrate = Migrate()
 jwt = JWTManager()
-socketio = SocketIO(cors_allowed_origins="http://localhost:80", async_mode='gevent')
+socketio = SocketIO(cors_allowed_origins="http://localhost:3003", async_mode='gevent')
 # csrf = CSRFProtect()
 
 
@@ -31,7 +31,7 @@ def create_app():
     migrate.init_app(app, db)
     jwt.init_app(app)
     # csrf.init_app(app)
-    CORS(app, supports_credentials=True, origins=["http://localhost:80"])
+    CORS(app, supports_credentials=True, origins=["http://localhost:3003"])
     socketio.init_app(app)
 
     from app.routes import init_routes
