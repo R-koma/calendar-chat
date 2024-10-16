@@ -7,8 +7,8 @@ on:
     paths:
       - ".github/workflows/**"
       - ".aws/**"
-      - "server/**"
-      - "client/**"
+      # - "server/**"
+      # - "client/**"
 
 permissions:
   id-token: write
