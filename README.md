@@ -52,7 +52,7 @@ NEXT_PUBLIC_API_URL=http://localhost:5000
 
 # サーバー側の環境変数
 SECRET_KEY=あなたが生成した秘密鍵
-DATABASE_URL=sqlite:///user.db
+DATABASE_URL=PostgreSQLを利用しています。ご自身の環境に合わせて設定してください。
 JWT_SECRET_KEY=あなたが生成したJWT秘密鍵
 ```
 
@@ -84,10 +84,9 @@ Dockerコンテナ内でFlaskのマイグレーションコマンドを実行し
 マイグレーションコマンドを実行
 
 ```bash
-cd server
-flask db init
-flask db migrate -m "Add Calendar Chat models"
-flask db upgrade
+docker compose exec server flask db init
+docker compose exec server flask db migrate -m "Add Calendar Chat models"
+docker compose exec server flask db upgrade
 ```
 
 初回のみ flask db init が必要です。すでにマイグレーションが初期化されている場合は、このコマンドは不要です。
