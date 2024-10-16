@@ -4,11 +4,11 @@ on:
   push:
     branches:
       - main
-    paths:
-      - ".github/workflows/**"
-      - ".aws/**"
-      # - "server/**"
-      # - "client/**"
+    # paths:
+    # - ".github/workflows/**"
+    # - ".aws/**"
+    # - "server/**"
+    # - "client/**"
 
 permissions:
   id-token: write
