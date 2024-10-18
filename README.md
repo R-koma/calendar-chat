@@ -48,7 +48,7 @@ cd calendar-chat
 
 ```env
 # クライアント側の環境変数
-NEXT_PUBLIC_API_URL=http://localhost:5000
+NEXT_PUBLIC_API_URL=http://localhost:5001
 
 # サーバー側の環境変数
 SECRET_KEY=あなたが生成した秘密鍵
